@@ -4,25 +4,38 @@
 
 @layer base {
   :root {
-    --background: 120 20% 98%;
-    --foreground: 150 40% 5%;
+    /* Background: A very faint tint of the light green for better readability */
+    --background: 136 37% 98%;
+    --foreground: 132 45% 10%;
+    
     --card: 0 0% 100%;
-    --card-foreground: 150 40% 5%;
+    --card-foreground: 132 45% 10%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 150 40% 5%;
-    --primary: 155 50% 15%; /* Deep Forest Green */
-    --primary-foreground: 120 15% 98%;
-    --secondary: 145 30% 94%; /* Pale Sage */
-    --secondary-foreground: 155 50% 15%;
-    --muted: 145 15% 94%;
-    --muted-foreground: 155 10% 40%;
-    --accent: 142 70% 45%; /* Vibrant Emerald Green (Replacing Orange) */
-    --accent-foreground: 0 0% 100%;
+    --popover-foreground: 132 45% 10%;
+    
+    /* Primary: Dark Green #266533 (HSL: 132 45% 27%) */
+    --primary: 132 45% 27%;
+    --primary-foreground: 136 37% 98%;
+    
+    /* Secondary: Light Green #bee0c7 (HSL: 136 37% 81%) */
+    --secondary: 136 37% 81%;
+    --secondary-foreground: 132 45% 27%;
+    
+    --muted: 136 30% 92%;
+    --muted-foreground: 132 20% 40%;
+    
+    /* Accent: Using the Dark Green for strong UI elements */
+    --accent: 132 45% 27%;
+    --accent-foreground: 136 37% 98%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 145 20% 90%;
-    --input: 145 20% 90%;
-    --ring: 155 50% 15%;
+    
+    --border: 136 30% 85%;
+    --input: 136 30% 85%;
+    --ring: 132 45% 27%;
+    
     --radius: 1.5rem;
   }
 }

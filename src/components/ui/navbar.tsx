@@ -9,28 +9,28 @@ export function Navbar() {
       <div className="container mx-auto px-4 flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="bg-primary p-2.5 rounded-2xl shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-             <LogoIcon className="h-6 w-6 text-white" />
+             <LogoIcon className="h-6 w-6 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
             <span className="text-2xl font-headline font-black text-primary tracking-tighter leading-none uppercase">
               HARVEST
             </span>
-            <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase leading-none mt-1">
+            <span className="text-[10px] font-bold text-primary/60 tracking-[0.2em] uppercase leading-none mt-1">
               Recipes AI
             </span>
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-white/50 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <Calendar className="h-4 w-4 text-accent" />
+          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-secondary/20 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+            <Calendar className="h-4 w-4 text-primary" />
             <span className="hidden md:inline">Planner</span>
           </Link>
-          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-white/50 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <Heart className="h-4 w-4 text-accent fill-accent/10" />
+          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-secondary/20 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+            <Heart className="h-4 w-4 text-primary fill-primary/10" />
             <span className="hidden md:inline">My Vault</span>
           </Link>
           <Link href="/pricing" className="flex items-center gap-2 text-xs font-bold text-white transition-colors bg-primary px-3 py-2 rounded-full shadow-md hover:bg-primary/90">
-            <CreditCard className="h-4 w-4 text-accent" />
+            <CreditCard className="h-4 w-4 text-secondary" />
             <span className="hidden md:inline">Upgrade</span>
           </Link>
         </div>
