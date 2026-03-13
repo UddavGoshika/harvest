@@ -12,23 +12,23 @@ import { Button } from "@/components/ui/button";
 import { 
   Clock, Sparkles, ChevronRight, ChefHat, ShoppingBasket, Plus, 
   Flame, Info, RotateCcw, Globe, Trophy, PlayCircle, Camera, CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Utensils, Heart, TrendingUp, Users
+  ArrowRight, ShieldCheck, Zap, Utensils, Heart, TrendingUp, Users, Check
 } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const REELS_MOCK = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai" },
-  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "pasta-reel" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "spinach-rescue" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "thai-curry" },
+  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "carrots-roasted" },
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", img: "pesto-pasta" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", img: "tofu-stirfry" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", img: "salad" },
+  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "pesto-pasta" },
+  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "tofu-stir-fry" },
+  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "greek-salad" },
 ];
 
 export default function Home() {
@@ -83,15 +83,15 @@ export default function Home() {
           <section className="text-center space-y-8 animate-fade-in pt-8 md:pt-16 max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-primary font-bold text-xs tracking-wider uppercase">
               <Sparkles className="h-4 w-4" />
-              AI-Powered Cooking Assistant
+              Next-Gen AI Kitchen OS
             </div>
             <h1 className="text-5xl md:text-7xl font-headline font-black tracking-tight leading-[1.1]">
               <span className="bg-gradient-to-r from-[#2E7D32] via-[#66BB6A] to-[#2E7D32] bg-clip-text text-transparent">
-               Turn Ingredients Into <br/>Delicious Recipes Instantly.
+               Delicious Recipes <br/>Instantly Generated.
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-              Upload ingredients → Get AI recipes. Scan your fridge or pantry and get personalized culinary inspiration in seconds.
+              Upload ingredients → Get AI recipes. The sustainable brain for your kitchen that tracks freshness and designs gourmet meals.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 pt-4">
@@ -125,20 +125,20 @@ export default function Home() {
           {/* Stats Bar */}
           <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">50k+</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Recipes Generated</p>
+              <p className="text-3xl font-black text-primary">100k+</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Recipes Created</p>
             </div>
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">20k</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Daily Cooks</p>
+              <p className="text-3xl font-black text-primary">45k</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Active Cooks</p>
             </div>
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">98%</p>
+              <p className="text-3xl font-black text-primary">99%</p>
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">AI Precision</p>
             </div>
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">A+</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Sustainability</p>
+              <p className="text-3xl font-black text-primary">A++</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Eco Rating</p>
             </div>
           </section>
 
@@ -148,59 +148,29 @@ export default function Home() {
             <div className="flex flex-wrap justify-center items-center gap-8 mt-10 text-muted-foreground/60">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ShieldCheck className="h-5 w-5 text-secondary" />
-                Smart Ingredient Detection
+                Multimodal Recognition
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <CheckCircle2 className="h-5 w-5 text-secondary" />
-                Personalized AI Generation
+                Flavor Booster AI
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <RotateCcw className="h-5 w-5 text-secondary" />
-                Zero Food Waste Engine
+                Zero Waste Engine
               </div>
             </div>
           </section>
-
-          {/* How It Works Section */}
-          {!suggestions && !isLoading && (
-            <section className="space-y-16 py-12">
-              <div className="text-center space-y-4">
-                <h2 className="text-4xl font-headline font-bold">How It Works</h2>
-                <p className="text-muted-foreground font-medium text-lg">Upload ingredients → Get AI recipes in 3 simple steps.</p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-12">
-                <StepCard 
-                  num="01" 
-                  title="Upload or Scan" 
-                  desc="Take a photo of your fridge or upload photos of your ingredients."
-                  icon={<Camera className="h-6 w-6" />}
-                />
-                <StepCard 
-                  num="02" 
-                  title="AI Analysis" 
-                  desc="Our AI identifies ingredients and considers your taste preferences instantly."
-                  icon={<Sparkles className="h-6 w-6" />}
-                />
-                <StepCard 
-                  num="03" 
-                  title="Get Recipes" 
-                  desc="Receive personalized, delicious recipes with full nutritional insights."
-                  icon={<ChefHat className="h-6 w-6" />}
-                />
-              </div>
-            </section>
-          )}
 
           {/* Results Section */}
           {(suggestions || isLoading) && (
             <section id="results" className="space-y-16 py-12">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8 border-primary/10">
                 <div className="space-y-2">
-                  <h2 className="text-4xl font-headline font-bold text-primary flex items-center gap-3">
+                  <h2 className="text-4xl font-headline font-bold text-primary">
                     Your Curated Recipes
                   </h2>
                   <p className="text-lg text-muted-foreground font-medium">
-                    {activeMode === 'rescue' ? 'Gourmet meals created from your leftovers.' : 'Discover what you can make today.'}
+                    Gourmet blueprints designed for your available ingredients.
                   </p>
                 </div>
               </div>
@@ -224,10 +194,10 @@ export default function Home() {
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-gourmet/800/500`} 
+                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-culinary/800/500`} 
                             alt={recipe.recipeName}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                            data-ai-hint="delicious food"
+                            data-ai-hint="gourmet dish"
                           />
                           <div className="absolute top-6 left-6 flex gap-2">
                              <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
@@ -248,7 +218,6 @@ export default function Home() {
                             {recipe.description}
                           </CardDescription>
                         </CardHeader>
-                        
                         <CardContent className="px-8 flex-1 space-y-6">
                           <div className="flex items-center gap-6 py-4 border-y border-primary/5">
                             <div className="flex items-center gap-2 text-[11px] font-black text-primary/70 uppercase tracking-widest">
@@ -260,10 +229,9 @@ export default function Home() {
                               {recipe.nutrition.calories} Cal
                             </div>
                           </div>
-                          
                           <div className="space-y-4">
                             <h4 className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                              <ShoppingBasket className="h-3 w-3" /> Required Ingredients
+                              <ShoppingBasket className="h-3 w-3" /> Ingredients
                             </h4>
                             <div className="flex flex-wrap gap-2">
                               {recipe.ingredientsUsed.slice(0, 4).map((ing, i) => (
@@ -271,32 +239,15 @@ export default function Home() {
                                   {ing}
                                 </Badge>
                               ))}
-                              {recipe.ingredientsUsed.length > 4 && (
-                                <span className="text-[10px] font-bold text-muted-foreground">+{recipe.ingredientsUsed.length - 4} more</span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="space-y-4 pt-2">
-                            <h4 className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                              <Utensils className="h-3 w-3" /> Cooking Blueprint
-                            </h4>
-                            <div className="space-y-2">
-                              {recipe.previewInstructions?.map((step, i) => (
-                                <p key={i} className="text-[11px] text-muted-foreground font-medium flex gap-2">
-                                  <span className="text-secondary font-black">{i+1}.</span> {step}
-                                </p>
-                              ))}
                             </div>
                           </div>
                         </CardContent>
-                        
                         <CardFooter className="px-8 pb-8 pt-6">
                           <Button 
                             className="w-full bg-gradient-primary hover:scale-[1.02] transition-all rounded-full h-14 text-sm font-black uppercase tracking-[0.15em] shadow-lg group border-none text-white"
                             onClick={() => setSelectedRecipe(recipe)}
                           >
-                            Get Full Recipe
+                            Full Cooking Guide
                             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                           </Button>
                         </CardFooter>
@@ -304,19 +255,24 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Related Reels Contextual Section */}
+                  {/* Reels Discovery */}
                   <div className="space-y-12 pt-16 border-t border-primary/10">
                     <div className="flex items-center justify-between px-4">
-                       <h3 className="text-3xl font-headline font-bold">Related Discovery</h3>
+                       <h3 className="text-3xl font-headline font-bold">Discovery Feed</h3>
                        <Link href="/reels">
-                         <Button variant="link" className="text-secondary font-bold text-lg">View all reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
+                         <Button variant="link" className="text-secondary font-bold text-lg">See all cooking reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
                        </Link>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                       {relatedReels.map((reel) => (
                         <div key={reel.id} className="group relative aspect-[9/16] rounded-[3rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all cursor-pointer">
-                          <div className={`absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/40 animate-pulse`} />
-                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+                          <img 
+                            src={`https://picsum.photos/seed/${reel.seed}/600/1000`} 
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                            alt={reel.title}
+                            data-ai-hint="chef cooking"
+                          />
+                          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
                           <div className="absolute top-6 left-6">
                             <Badge className="bg-white/90 text-primary border-none text-[9px] rounded-full uppercase font-black px-4 py-1">
                               {reel.tag}
@@ -327,9 +283,7 @@ export default function Home() {
                              <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">{reel.author}</p>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="h-16 w-16 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center border border-white/30 shadow-2xl">
-                              <PlayCircle className="h-8 w-8 text-white" />
-                            </div>
+                            <PlayCircle className="h-16 w-16 text-white/50" />
                           </div>
                         </div>
                       ))}
@@ -340,84 +294,81 @@ export default function Home() {
             </section>
           )}
 
-          {/* Trending Recipes Section */}
-          {!suggestions && !isLoading && (
-            <section className="space-y-12">
-               <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <h2 className="text-4xl font-headline font-bold">Trending Creations</h2>
-                    <p className="text-muted-foreground font-medium">Most cooked recipes by the Ingredia community.</p>
-                  </div>
-                  <Link href="/reels">
-                    <Button variant="outline" className="rounded-full border-primary/20">View Community Feed</Button>
-                  </Link>
-               </div>
-               <div className="grid md:grid-cols-3 gap-8">
-                 {TRENDING_RECIPES.map((recipe, idx) => (
-                   <Card key={idx} className="rounded-[2.5rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer">
-                     <div className="aspect-[16/10] overflow-hidden relative">
-                        <img 
-                          src={`https://picsum.photos/seed/trending-${idx}/600/400`} 
-                          alt={recipe.name} 
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform"
-                          data-ai-hint="cooking food"
-                        />
-                        <div className="absolute top-4 left-4">
-                           <Badge className="bg-white/90 text-primary border-none text-[10px] font-black">{recipe.difficulty}</Badge>
-                        </div>
-                     </div>
-                     <CardHeader className="p-6">
-                        <CardTitle className="text-xl font-headline font-bold">{recipe.name}</CardTitle>
-                        <div className="flex items-center gap-4 text-[10px] font-black uppercase text-muted-foreground mt-2">
-                           <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {recipe.time}</span>
-                           <span className="flex items-center gap-1"><Flame className="h-3 w-3" /> {recipe.cal} Cal</span>
-                        </div>
-                     </CardHeader>
-                   </Card>
-                 ))}
-               </div>
-            </section>
-          )}
+          {/* Trending Section */}
+          <section className="space-y-12 py-12">
+             <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <h2 className="text-4xl font-headline font-bold">Trending Creations</h2>
+                  <p className="text-muted-foreground font-medium">Most popular blueprints in the Ingredia community.</p>
+                </div>
+             </div>
+             <div className="grid md:grid-cols-3 gap-8">
+               {TRENDING_RECIPES.map((recipe, idx) => (
+                 <Card key={idx} className="rounded-[2.5rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer">
+                   <div className="aspect-[16/10] overflow-hidden relative">
+                      <img 
+                        src={`https://picsum.photos/seed/${recipe.seed}/600/400`} 
+                        alt={recipe.name} 
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform"
+                        data-ai-hint="plated gourmet food"
+                      />
+                      <div className="absolute top-4 left-4">
+                         <Badge className="bg-white/90 text-primary border-none text-[10px] font-black">{recipe.difficulty}</Badge>
+                      </div>
+                   </div>
+                   <CardHeader className="p-6">
+                      <CardTitle className="text-xl font-headline font-bold">{recipe.name}</CardTitle>
+                      <div className="flex items-center gap-4 text-[10px] font-black uppercase text-muted-foreground mt-2">
+                         <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {recipe.time}</span>
+                         <span className="flex items-center gap-1"><Flame className="h-3 w-3" /> {recipe.cal} Cal</span>
+                      </div>
+                   </CardHeader>
+                 </Card>
+               ))}
+             </div>
+          </section>
 
-          {/* Sustainable Cooking Feature */}
-          <section className="bg-primary/5 rounded-[4rem] p-12 md:p-20 overflow-hidden relative">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8 relative z-10">
-                <Badge className="bg-secondary text-primary font-black px-6 py-2 rounded-full uppercase tracking-widest text-[10px]">
-                  Sustainability First
-                </Badge>
-                <h2 className="text-4xl md:text-5xl font-headline font-black text-primary leading-tight">
-                  Stop Wasting, <br />
-                  <span className="text-secondary italic">Start Creating.</span>
-                </h2>
-                <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-                  Our Leftover Rescue mode uses advanced multimodal AI to identify ingredients nearing their expiry and crafts Michelin-star recipes to ensure nothing goes to waste.
-                </p>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <h4 className="text-3xl font-black text-primary">30%</h4>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Less Food Waste</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="text-3xl font-black text-primary">500+</h4>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Rescue Recipes</p>
-                  </div>
-                </div>
-              </div>
-              <div className="relative group">
-                <img 
-                  src="https://picsum.photos/seed/waste-reduction/800/600" 
-                  alt="Food waste reduction" 
-                  className="rounded-[3rem] shadow-2xl transition-transform duration-700 group-hover:scale-105"
-                  data-ai-hint="fresh vegetables kitchen"
-                />
-                <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-[2rem] shadow-xl border border-primary/5 flex items-center gap-4">
-                  <RotateCcw className="h-8 w-8 text-secondary" />
-                  <p className="text-xs font-black text-primary uppercase leading-tight">Saved 2kg of <br/>produce today</p>
-                </div>
-              </div>
+          {/* SaaS Pricing Section */}
+          <section className="py-24 space-y-16">
+            <div className="text-center space-y-4">
+               <h2 className="text-4xl md:text-5xl font-headline font-black">Choose Your Kitchen tier</h2>
+               <p className="text-muted-foreground text-lg max-w-xl mx-auto">Upgrade for unlimited AI scanning and gourmet blueprints.</p>
             </div>
-            <div className="absolute -top-24 -left-24 h-64 w-64 bg-secondary/10 rounded-full blur-3xl" />
+            <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+              <Card className="rounded-[3rem] border-2 border-primary/5 p-8 bg-white/50">
+                 <CardHeader className="text-center pb-8 border-b border-primary/5">
+                   <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4">Basic</h4>
+                   <h3 className="text-4xl font-black text-primary">$0</h3>
+                   <p className="text-xs font-bold text-muted-foreground uppercase mt-2">Free Forever</p>
+                 </CardHeader>
+                 <CardContent className="py-8 space-y-4">
+                   <PricingFeature text="3 Scans per day" />
+                   <PricingFeature text="Standard recipes" />
+                   <PricingFeature text="Basic nutrition" />
+                 </CardContent>
+                 <CardFooter>
+                    <Button variant="outline" className="w-full rounded-full h-12 border-primary/20">Current Plan</Button>
+                 </CardFooter>
+              </Card>
+
+              <Card className="rounded-[3rem] border-4 border-accent p-8 bg-white shadow-2xl relative overflow-hidden">
+                 <div className="absolute top-0 right-0 bg-accent text-white px-6 py-1.5 font-black text-[9px] uppercase tracking-widest rounded-bl-2xl">Recommended</div>
+                 <CardHeader className="text-center pb-8 border-b border-primary/5">
+                   <h4 className="text-xs font-black uppercase tracking-widest text-secondary mb-4">Seedling Pro</h4>
+                   <h3 className="text-4xl font-black text-primary">$1.99<span className="text-xs text-muted-foreground font-bold">/mo</span></h3>
+                   <p className="text-xs font-bold text-muted-foreground uppercase mt-2">Support Culinary AI</p>
+                 </CardHeader>
+                 <CardContent className="py-8 space-y-4">
+                   <PricingFeature text="Unlimited Scans" active />
+                   <PricingFeature text="Gourmet Blueprints" active />
+                   <PricingFeature text="Full Kitchen OS" active />
+                   <PricingFeature text="Ad-free Discovery" active />
+                 </CardContent>
+                 <CardFooter>
+                    <Button className="w-full rounded-full h-12 bg-accent hover:bg-accent/90 text-white font-black uppercase tracking-widest text-xs">Upgrade Now</Button>
+                 </CardFooter>
+              </Card>
+            </div>
           </section>
         </div>
       </main>
@@ -428,14 +379,13 @@ export default function Home() {
             <ChefHat className="h-16 w-16 text-secondary" />
             <span className="text-5xl font-headline font-black tracking-tighter uppercase">INGREDIA</span>
           </div>
-          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Sustainable culinary intelligence for the modern home cook.</p>
+          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Empowering homes with sustainable culinary intelligence.</p>
           <div className="pt-8 border-t border-white/10 flex flex-wrap justify-center gap-10 text-xs font-black uppercase tracking-[0.2em] text-white/40">
              <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
              <Link href="/pantry" className="hover:text-white transition-colors">Pantry</Link>
              <Link href="/planner" className="hover:text-white transition-colors">Meal Planner</Link>
              <Link href="/collection" className="hover:text-white transition-colors">Vault</Link>
           </div>
-          <p className="text-[10px] text-white/20 uppercase tracking-widest">© {new Date().getFullYear()} Ingredia AI Inc. All rights reserved.</p>
         </div>
       </footer>
 
@@ -464,17 +414,13 @@ function ModeButton({ active, onClick, icon, label }: { active: boolean, onClick
   );
 }
 
-function StepCard({ num, title, desc, icon }: { num: string, title: string, desc: string, icon: React.ReactNode }) {
+function PricingFeature({ text, active }: { text: string, active?: boolean }) {
   return (
-    <div className="bg-white p-12 rounded-[4rem] shadow-sm border border-primary/5 space-y-6 group hover:shadow-2xl transition-all hover:-translate-y-3">
-      <div className="flex items-center justify-between">
-        <div className="h-16 w-16 bg-secondary/10 rounded-[1.5rem] flex items-center justify-center text-secondary">
-          {icon}
-        </div>
-        <span className="text-6xl font-black text-primary/5 group-hover:text-secondary/15 transition-colors tracking-tighter">{num}</span>
-      </div>
-      <h3 className="text-3xl font-headline font-bold text-primary">{title}</h3>
-      <p className="text-muted-foreground font-medium leading-relaxed text-lg">{desc}</p>
+    <div className="flex items-center gap-3">
+       <div className={`h-5 w-5 rounded-full flex items-center justify-center ${active ? 'bg-secondary/20 text-secondary' : 'bg-muted text-muted-foreground'}`}>
+         <Check className="h-3.5 w-3.5" />
+       </div>
+       <span className={`text-sm font-bold ${active ? 'text-primary' : 'text-muted-foreground'}`}>{text}</span>
     </div>
   );
 }

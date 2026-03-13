@@ -2,15 +2,21 @@
   "placeholderImages": [
     {
       "id": "hero-cooking",
-      "description": "A beautiful kitchen with fresh vegetables and herbs",
-      "imageUrl": "https://picsum.photos/seed/harvest1/1200/600",
-      "imageHint": "fresh vegetables"
+      "description": "Gourmet meal being prepared in a high-end kitchen",
+      "imageUrl": "https://picsum.photos/seed/chef-prep/1200/600",
+      "imageHint": "gourmet kitchen"
     },
     {
       "id": "ingredients-basket",
-      "description": "A wooden basket filled with seasonal produce",
-      "imageUrl": "https://picsum.photos/seed/harvest2/600/400",
-      "imageHint": "food basket"
+      "description": "Artisan vegetable arrangement",
+      "imageUrl": "https://picsum.photos/seed/fresh-basket/600/400",
+      "imageHint": "chef ingredients"
+    },
+    {
+      "id": "trending-dish",
+      "description": "Plated gourmet dish with fresh herbs",
+      "imageUrl": "https://picsum.photos/seed/plated-dish/600/400",
+      "imageHint": "plated food"
     }
   ]
 }
