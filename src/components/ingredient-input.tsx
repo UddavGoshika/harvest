@@ -1,13 +1,21 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Camera, Plus, X, Upload, CheckCircle2, RefreshCw, Trash2 } from "lucide-react";
+import { Camera, Plus, X, Upload, CheckCircle2, RefreshCw, Trash2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { toast } from "@/hooks/use-toast";
+
+const COMMON_INGREDIENTS = [
+  "Garlic", "Onion", "Olive Oil", "Salt", "Black Pepper", "Butter", "Eggs", "Milk", 
+  "Flour", "Chicken Breast", "Tomato", "Pasta", "Rice", "Lemon", "Parmesan", 
+  "Cilantro", "Parsley", "Rosemary", "Thyme", "Ginger", "Soy Sauce", "Honey", 
+  "Balsamic Vinegar", "Cumin", "Paprika", "Cinnamon", "Basil", "Spinach", 
+  "Carrot", "Potato", "Bell Pepper", "Beef", "Pork", "Shrimp", "Salmon"
+];
 
 interface IngredientInputProps {
   onGenerate: (data: { photos: string[], text: string }) => void;
@@ -19,6 +27,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
   const [text, setText] = useState("");
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -40,13 +49,12 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
           toast({
             variant: 'destructive',
             title: 'Camera Access Denied',
-            description: 'Please enable camera permissions in your browser settings to use this feature.',
+            description: 'Please enable camera permissions in your settings.',
           });
         }
       };
       getCameraPermission();
     } else {
-      // Stop the stream when camera is inactive
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
@@ -77,16 +85,38 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUri = canvas.toDataURL('image/jpeg');
         setPhotos(prev => [...prev, dataUri]);
-        toast({
-          title: "Photo Captured",
-          description: "Ingredient added to the list.",
-        });
+        toast({ title: "Captured!", description: "Added to your visual pantry." });
       }
     }
   };
 
   const removePhoto = (index: number) => {
     setPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setText(val);
+    
+    // Suggest based on the last word typed
+    const parts = val.split(',');
+    const lastPart = parts[parts.length - 1].trim().toLowerCase();
+    
+    if (lastPart.length > 1) {
+      const filtered = COMMON_INGREDIENTS.filter(item => 
+        item.toLowerCase().includes(lastPart) && !val.toLowerCase().includes(item.toLowerCase())
+      ).slice(0, 5);
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const addSuggestion = (item: string) => {
+    const parts = text.split(',');
+    parts[parts.length - 1] = ` ${item}`;
+    setText(parts.join(',').trim() + ", ");
+    setSuggestions([]);
   };
 
   return (
@@ -106,7 +136,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
               suppressHydrationWarning
             >
               {isCameraActive ? <X className="h-4 w-4 mr-2" /> : <Camera className="h-4 w-4 mr-2" />}
-              {isCameraActive ? "Close Camera" : "Use Camera"}
+              {isCameraActive ? "Close" : "Camera"}
             </Button>
             <Button 
               variant="outline"
@@ -121,16 +151,9 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
           </div>
         </div>
 
-        {/* Camera Feed */}
         {isCameraActive && (
-          <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border-4 border-accent/20 group animate-in fade-in zoom-in duration-300">
-            <video 
-              ref={videoRef} 
-              className="w-full h-full object-cover" 
-              autoPlay 
-              muted 
-              playsInline
-            />
+          <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border-4 border-primary/10 animate-in fade-in zoom-in duration-300">
+            <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
             <div className="absolute bottom-6 inset-x-0 flex justify-center">
               <Button 
                 onClick={capturePhoto}
@@ -144,7 +167,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
               <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-6 text-center">
                 <Alert variant="destructive" className="max-w-xs">
                   <AlertTitle>Camera Access Required</AlertTitle>
-                  <AlertDescription>Please enable camera permissions in your settings.</AlertDescription>
+                  <AlertDescription>Enable permissions in your browser settings.</AlertDescription>
                 </Alert>
               </div>
             )}
@@ -152,17 +175,16 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
           </div>
         )}
         
-        {/* Photo Grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4">
           {photos.map((photo, i) => (
-            <div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group hover:ring-2 ring-accent transition-all">
+            <div key={i} className="relative aspect-square rounded-xl overflow-hidden border group shadow-sm">
               <img src={photo} alt="Ingredient" className="object-cover w-full h-full" />
               <button 
                 onClick={() => removePhoto(i)}
                 className="absolute top-1 right-1 bg-destructive/90 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                 suppressHydrationWarning
               >
-                <X className="h-3 w-3" />
+                <Trash2 className="h-3 w-3" />
               </button>
             </div>
           ))}
@@ -172,36 +194,48 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
               className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-muted rounded-xl bg-muted/20 cursor-pointer hover:bg-muted/30 transition-colors"
             >
               <Camera className="h-6 w-6 text-muted-foreground mb-1" />
-              <span className="text-[10px] text-muted-foreground font-medium">Capture</span>
+              <span className="text-[10px] text-muted-foreground font-medium">Add Photo</span>
             </div>
           )}
         </div>
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          onChange={handleFileChange} 
-          className="hidden" 
-          multiple 
-          accept="image/*" 
-        />
+        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple accept="image/*" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 relative">
         <Label className="text-xl font-headline text-primary font-bold flex items-center gap-3">
           <Plus className="h-6 w-6 text-accent" />
           Extra Items
         </Label>
-        <Input 
-          placeholder="What else is in your kitchen? (e.g. olive oil, sea salt, rosemary)" 
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="border-primary/10 focus-visible:ring-accent h-14 text-lg px-6 rounded-2xl bg-muted/10"
-          suppressHydrationWarning
-        />
+        <div className="relative">
+          <Input 
+            placeholder="e.g. Garlic, onions, paprika, honey..." 
+            value={text}
+            onChange={handleTextChange}
+            className="border-primary/10 focus-visible:ring-primary h-14 text-lg px-6 rounded-2xl bg-muted/10 pr-12"
+            suppressHydrationWarning
+          />
+          <Search className="absolute right-4 top-4 h-6 w-6 text-muted-foreground/30" />
+        </div>
+        
+        {/* Real-time Suggestions UI */}
+        {suggestions.length > 0 && (
+          <div className="absolute z-10 w-full mt-2 bg-white border border-primary/5 shadow-2xl rounded-2xl p-2 flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            {suggestions.map((item) => (
+              <button
+                key={item}
+                onClick={() => addSuggestion(item)}
+                className="px-4 py-2 rounded-xl bg-secondary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all"
+                suppressHydrationWarning
+              >
+                + {item}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <Button 
-        className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-white transition-all rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+        className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-white transition-all rounded-2xl shadow-xl hover:-translate-y-0.5"
         onClick={() => onGenerate({ photos, text })}
         disabled={isLoading || (photos.length === 0 && !text.trim())}
         suppressHydrationWarning
@@ -209,7 +243,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
         {isLoading ? (
           <>
             <RefreshCw className="h-6 w-6 animate-spin mr-3" />
-            Crafting Culinary Magic...
+            Generating Recipes...
           </>
         ) : (
           <>
