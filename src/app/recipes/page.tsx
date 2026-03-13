@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/ui/navbar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Flame, ChevronRight, Filter, Search } from "lucide-react";
@@ -13,12 +13,12 @@ const CATEGORIES = [
 ];
 
 const ALL_RECIPES = [
-  { name: "North Indian Paneer Tikka", category: "Indian Regional", time: "25 min", cal: 350, difficulty: "Medium", seed: "paneer-tikka-curry" },
-  { name: "South Indian Sambar", category: "Indian Regional", time: "30 min", cal: 180, difficulty: "Easy", seed: "sambar-bowl" },
-  { name: "Thai Basil Chicken", category: "Global Fusion", time: "15 min", cal: 420, difficulty: "Easy", seed: "thai-basil-chicken" },
-  { name: "Quinoa Veggie Bowl", category: "Healthy Bites", time: "10 min", cal: 290, difficulty: "Easy", seed: "quinoa-salad" },
-  { name: "Spinach & Cheese Pasta", category: "Quick & Easy", time: "15 min", cal: 450, difficulty: "Easy", seed: "spinach-pasta" },
-  { name: "Rescue Veggie Stir-fry", category: "Leftover Rescue", time: "12 min", cal: 210, difficulty: "Easy", seed: "mixed-vegetable-stirfry" },
+  { name: "North Indian Paneer Tikka", category: "Indian Regional", time: "25 min", cal: 350, difficulty: "Medium", seed: "201", hint: "paneer tikka" },
+  { name: "South Indian Sambar", category: "Indian Regional", time: "30 min", cal: 180, difficulty: "Easy", seed: "202", hint: "indian sambar" },
+  { name: "Thai Basil Chicken", category: "Global Fusion", time: "15 min", cal: 420, difficulty: "Easy", seed: "203", hint: "thai chicken" },
+  { name: "Quinoa Veggie Bowl", category: "Healthy Bites", time: "10 min", cal: 290, difficulty: "Easy", seed: "204", hint: "quinoa bowl" },
+  { name: "Spinach & Cheese Pasta", category: "Quick & Easy", time: "15 min", cal: 450, difficulty: "Easy", seed: "205", hint: "spinach pasta" },
+  { name: "Rescue Veggie Stir-fry", category: "Leftover Rescue", time: "12 min", cal: 210, difficulty: "Easy", seed: "206", hint: "vegetable stirfry" },
 ];
 
 export default function RecipesPage() {
@@ -49,6 +49,7 @@ export default function RecipesPage() {
                 variant={activeCategory === "All" ? "default" : "outline"}
                 onClick={() => setActiveCategory("All")}
                 className="rounded-full px-6 h-10 font-bold"
+                suppressHydrationWarning
               >
                 All
               </Button>
@@ -58,6 +59,7 @@ export default function RecipesPage() {
                   variant={activeCategory === cat ? "default" : "outline"}
                   onClick={() => setActiveCategory(cat)}
                   className="rounded-full px-6 h-10 font-bold"
+                  suppressHydrationWarning
                 >
                   {cat}
                 </Button>
@@ -65,7 +67,7 @@ export default function RecipesPage() {
             </div>
             <div className="relative w-full md:w-64">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input className="pl-10 rounded-full border-primary/10 h-10" placeholder="Search blueprints..." />
+              <Input className="pl-10 rounded-full border-primary/10 h-10" placeholder="Search blueprints..." suppressHydrationWarning />
             </div>
           </div>
 
@@ -77,7 +79,7 @@ export default function RecipesPage() {
                      src={`https://picsum.photos/seed/${recipe.seed}/800/500`} 
                      alt={recipe.name} 
                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
-                     data-ai-hint="plated gourmet recipe"
+                     data-ai-hint={recipe.hint}
                    />
                    <div className="absolute top-4 left-4 flex gap-2">
                       <Badge className="bg-white/95 text-primary border-none text-[10px] font-black px-3 py-1 rounded-full">
@@ -94,7 +96,7 @@ export default function RecipesPage() {
                    </div>
                 </CardHeader>
                 <CardFooter className="px-6 pb-6 pt-0">
-                  <Button variant="ghost" className="w-full rounded-full border border-primary/10 hover:bg-primary/5 text-xs font-black uppercase tracking-widest">
+                  <Button variant="ghost" className="w-full rounded-full border border-primary/10 hover:bg-primary/5 text-xs font-black uppercase tracking-widest" suppressHydrationWarning>
                     View Blueprint <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardFooter>

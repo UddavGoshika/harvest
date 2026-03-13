@@ -3,19 +3,19 @@
     {
       "id": "hero-cooking",
       "description": "Gourmet meal being prepared in a high-end kitchen",
-      "imageUrl": "https://picsum.photos/seed/chef-prep/1200/600",
+      "imageUrl": "https://picsum.photos/seed/412/1200/600",
       "imageHint": "gourmet kitchen"
     },
     {
       "id": "ingredients-basket",
       "description": "Artisan vegetable arrangement",
-      "imageUrl": "https://picsum.photos/seed/fresh-basket/600/400",
-      "imageHint": "chef ingredients"
+      "imageUrl": "https://picsum.photos/seed/563/600/400",
+      "imageHint": "fresh vegetables"
     },
     {
       "id": "trending-dish",
       "description": "Plated gourmet dish with fresh herbs",
-      "imageUrl": "https://picsum.photos/seed/plated-dish/600/400",
+      "imageUrl": "https://picsum.photos/seed/234/600/400",
       "imageHint": "plated food"
     }
   ]

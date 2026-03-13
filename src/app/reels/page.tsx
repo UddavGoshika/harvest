@@ -7,9 +7,9 @@ import { Heart, MessageCircle, Share2, Play, Pause, ChevronDown, ChevronUp } fro
 import { Button } from "@/components/ui/button";
 
 const REELS = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", color: "bg-primary/20" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", color: "bg-primary/30" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", color: "bg-primary/40" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", seed: "501", hint: "chef pasta" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", seed: "502", hint: "spinach cooking" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", seed: "503", hint: "thai cooking" },
 ];
 
 export default function ReelsPage() {
@@ -21,8 +21,17 @@ export default function ReelsPage() {
       <main className="flex-1 relative flex items-center justify-center overflow-hidden">
         <div className="w-full max-w-[450px] aspect-[9/16] bg-neutral-900 rounded-[3rem] relative overflow-hidden shadow-2xl border border-white/10">
           
-          {/* Reel Content Placeholder */}
-          <div className={`absolute inset-0 flex flex-col items-center justify-center ${REELS[activeIdx].color} transition-colors duration-500`}>
+          {/* Reel Content Background */}
+          <div className="absolute inset-0 transition-opacity duration-500">
+             <img 
+               src={`https://picsum.photos/seed/${REELS[activeIdx].seed}/600/1000`} 
+               alt={REELS[activeIdx].title}
+               className="w-full h-full object-cover"
+               data-ai-hint={REELS[activeIdx].hint}
+             />
+          </div>
+
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
             <Play className="h-20 w-20 text-white/20 animate-pulse" />
             <h2 className="text-white text-3xl font-headline font-black text-center px-10 mt-6 leading-tight">
               {REELS[activeIdx].title}
@@ -41,7 +50,7 @@ export default function ReelsPage() {
                 <p className="text-white font-black">{REELS[activeIdx].author}</p>
                 <p className="text-white/60 text-xs">Recommended for you</p>
               </div>
-              <Button size="sm" className="ml-auto rounded-full bg-primary font-bold px-6 h-8 text-[10px]">
+              <Button size="sm" className="ml-auto rounded-full bg-primary font-bold px-6 h-8 text-[10px]" suppressHydrationWarning>
                 Follow
               </Button>
             </div>

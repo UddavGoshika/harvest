@@ -11,22 +11,22 @@ import { Button } from "@/components/ui/button";
 import { 
   Clock, Sparkles, ChevronRight, ChefHat, ShoppingBasket, 
   Flame, RotateCcw, Globe, Trophy, PlayCircle, CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Heart, Check
+  ArrowRight, ShieldCheck, Zap, Heart
 } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
 
 const REELS_MOCK = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "pasta-gourmet" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "spinach-dish" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "thai-curry-plated" },
-  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "carrots-roasted-plated" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "301", hint: "gourmet pasta" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "302", hint: "spinach dish" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "303", hint: "thai curry" },
+  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "304", hint: "roasted carrots" },
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "pesto-pasta-plate" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "tofu-stir-fry-dish" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "greek-salad-bowl" },
+  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "305", hint: "pesto pasta" },
+  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "306", hint: "tofu stirfry" },
+  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "307", hint: "mediterranean salad" },
 ];
 
 export default function Home() {
@@ -120,26 +120,6 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Stats Bar */}
-          <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">100k+</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Recipes Created</p>
-            </div>
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">45k</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Active Cooks</p>
-            </div>
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">99%</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">AI Precision</p>
-            </div>
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-primary/5 text-center space-y-1">
-              <p className="text-3xl font-black text-primary">A++</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Eco Rating</p>
-            </div>
-          </section>
-
           {/* Core Input Section */}
           <section className="animate-slide-up max-w-4xl mx-auto">
             <IngredientInput onGenerate={handleGenerate} isLoading={isLoading} />
@@ -192,10 +172,10 @@ export default function Home() {
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-culinary-dish/800/500`} 
+                            src={`https://picsum.photos/seed/40${idx}/800/500`} 
                             alt={recipe.recipeName}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                            data-ai-hint="plated recipe dish"
+                            data-ai-hint="plated gourmet dish"
                           />
                           <div className="absolute top-6 left-6 flex gap-2">
                              <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
@@ -244,6 +224,7 @@ export default function Home() {
                           <Button 
                             className="w-full bg-gradient-primary hover:scale-[1.02] transition-all rounded-full h-14 text-sm font-black uppercase tracking-[0.15em] shadow-lg group border-none text-white"
                             onClick={() => setSelectedRecipe(recipe)}
+                            suppressHydrationWarning
                           >
                             Full Cooking Guide
                             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
@@ -258,7 +239,7 @@ export default function Home() {
                     <div className="flex items-center justify-between px-4">
                        <h3 className="text-3xl font-headline font-bold">Discovery Feed</h3>
                        <Link href="/reels">
-                         <Button variant="link" className="text-secondary font-bold text-lg">See all cooking reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
+                         <Button variant="link" className="text-secondary font-bold text-lg" suppressHydrationWarning>See all cooking reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
                        </Link>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -268,7 +249,7 @@ export default function Home() {
                             src={`https://picsum.photos/seed/${reel.seed}/600/1000`} 
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                             alt={reel.title}
-                            data-ai-hint="chef cooking recipe"
+                            data-ai-hint={reel.hint}
                           />
                           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
                           <div className="absolute top-6 left-6">
@@ -308,7 +289,7 @@ export default function Home() {
                         src={`https://picsum.photos/seed/${recipe.seed}/600/400`} 
                         alt={recipe.name} 
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform"
-                        data-ai-hint="gourmet plated recipe"
+                        data-ai-hint={recipe.hint}
                       />
                       <div className="absolute top-4 left-4">
                          <Badge className="bg-white/90 text-primary border-none text-[10px] font-black">{recipe.difficulty}</Badge>
