@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/ui/navbar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Flame, ChevronRight, Filter, Search } from "lucide-react";
