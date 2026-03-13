@@ -48,7 +48,7 @@ export default function RecipesPage() {
           
           <header className="space-y-4">
             <h1 className="text-4xl md:text-6xl font-headline font-black text-primary leading-tight">
-              Culinary <span className="text-secondary italic">Blueprint</span> Gallery
+              Culinary <span className="text-secondary italic"> Recipes</span> 
             </h1>
             <p className="text-lg text-muted-foreground font-medium max-w-2xl">
               Explore our vast library of AI-optimized recipes from across the globe and regional heartlands. Launched over 4 months ago, our gallery features thousands of curated blueprints.
