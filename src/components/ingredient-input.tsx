@@ -55,6 +55,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
           <button 
             onClick={() => fileInputRef.current?.click()}
             className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-primary/20 rounded-lg hover:border-primary/40 hover:bg-primary/5 transition-all group"
+            suppressHydrationWarning
           >
             <Plus className="h-8 w-8 text-primary/40 group-hover:text-primary/60" />
             <span className="text-xs text-muted-foreground mt-2">Add Photo</span>
@@ -80,6 +81,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="border-primary/20 focus-visible:ring-primary h-12"
+          suppressHydrationWarning
         />
       </div>
 
