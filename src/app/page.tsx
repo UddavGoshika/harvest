@@ -101,7 +101,7 @@ export default function Home() {
 
           <div className="flex justify-center">
             <Link href="/reels">
-              <Button variant="outline" className="rounded-full border-primary/20 text-primary font-bold px-8 h-12">
+              <Button variant="outline" className="rounded-full border-primary/20 text-primary font-bold px-8 h-12" suppressHydrationWarning>
                 <PlayCircle className="mr-2 h-5 w-5 text-primary" />
                 Browse Social Reels
               </Button>
