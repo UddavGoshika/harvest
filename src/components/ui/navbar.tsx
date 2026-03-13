@@ -1,7 +1,15 @@
+
 "use client";
 
 import Link from "next/link";
-import { Heart, LayoutDashboard, Calendar, ShoppingCart, ShoppingBasket, PlayCircle, Sparkles } from "lucide-react";
+import { Heart, LayoutDashboard, Calendar, ShoppingCart, ShoppingBasket, PlayCircle, ChefHat, Globe } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "./button";
 
 export function Navbar() {
   return (
@@ -22,11 +30,27 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-1 sm:gap-3">
           <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
-          <NavLink href="/reels" icon={<PlayCircle className="h-4 w-4" />} label="Discovery" />
-          <NavLink href="/pantry" icon={<ShoppingBasket className="h-4 w-4" />} label="Fridge" />
-          <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Planner" />
-          <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery" />
-          <NavLink href="/collection" icon={<Heart className="h-4 w-4" />} label="Vault" />
+          <NavLink href="/" icon={<ChefHat className="h-4 w-4" />} label="Recipes" />
+          <NavLink href="/pantry" icon={<ShoppingBasket className="h-4 w-4" />} label="Pantry" />
+          <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Meal Planner" />
+          <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery List" />
+          <NavLink href="/collection" icon={<Heart className="h-4 w-4" />} label="Saved Recipes" />
+          
+          <div className="ml-2 border-l border-primary/10 pl-4 hidden md:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest text-primary/60">
+                  <Globe className="h-3 w-3 mr-2" /> EN
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-2xl border-primary/10">
+                <DropdownMenuItem className="text-xs font-bold py-3">English</DropdownMenuItem>
+                <DropdownMenuItem className="text-xs font-bold py-3">हिंदी (Hindi)</DropdownMenuItem>
+                <DropdownMenuItem className="text-xs font-bold py-3">తెలుగు (Telugu)</DropdownMenuItem>
+                <DropdownMenuItem className="text-xs font-bold py-3">தமிழ் (Tamil)</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </nav>
@@ -37,7 +61,7 @@ function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, l
   return (
     <Link href={href} className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-3 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
       <span className="text-secondary">{icon}</span>
-      <span className="hidden lg:inline">{label}</span>
+      <span className="hidden xl:inline">{label}</span>
     </Link>
   );
 }

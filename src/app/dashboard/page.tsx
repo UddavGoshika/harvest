@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { 
   ShoppingBasket, Calendar, AlertTriangle, TrendingUp, Sparkles, 
-  ChevronRight, ArrowUpRight, ChefHat, Clock, Flame 
+  ChevronRight, ArrowUpRight, ChefHat, Clock, Flame, Apple, Droplets, Zap
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -47,8 +48,8 @@ export default function DashboardPage() {
             </div>
             <div className="flex gap-3">
                <Link href="/">
-                 <Button className="rounded-full bg-primary font-black shadow-xl h-12 px-8 uppercase text-xs tracking-widest">
-                   New Scan <Sparkles className="ml-2 h-4 w-4" />
+                 <Button className="rounded-full bg-gradient-primary border-none text-white font-black shadow-xl h-12 px-8 uppercase text-xs tracking-widest">
+                   Find Recipes <Sparkles className="ml-2 h-4 w-4" />
                  </Button>
                </Link>
             </div>
@@ -81,7 +82,10 @@ export default function DashboardPage() {
                         <div key={i} className="flex items-center justify-between p-5 bg-destructive/5 rounded-2xl border border-destructive/10">
                           <div className="flex items-center gap-4">
                             <ShoppingBasket className="h-5 w-5 text-destructive" />
-                            <span className="font-bold text-primary">{item.name}</span>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-primary">{item.name}</span>
+                              <span className="text-[10px] text-muted-foreground uppercase font-black">Quantity: {item.quantity}</span>
+                            </div>
                           </div>
                           <Badge variant="outline" className="text-destructive border-destructive/20 font-black text-[10px] uppercase">
                             Rescue Now
@@ -98,10 +102,11 @@ export default function DashboardPage() {
 
                 <div className="pt-6 border-t border-primary/5">
                    <h4 className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mb-6">Inventory Utilization</h4>
-                   <div className="space-y-6">
+                   <div className="grid grid-cols-2 gap-8">
                       <DashboardProgress label="Produce" value={65} />
                       <DashboardProgress label="Proteins" value={40} />
                       <DashboardProgress label="Dairy" value={80} />
+                      <DashboardProgress label="Grains" value={25} />
                    </div>
                 </div>
               </CardContent>
@@ -166,7 +171,7 @@ function DashboardProgress({ label, value }: { label: string, value: number }) {
     <div className="space-y-2">
       <div className="flex justify-between text-[11px] font-black text-primary uppercase tracking-widest">
         <span>{label}</span>
-        <span>{value}% Full</span>
+        <span>{value}%</span>
       </div>
       <Progress value={value} className="h-2 rounded-full" />
     </div>
