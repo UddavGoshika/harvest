@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { IngredientInput } from "@/components/ingredient-input";
 import { generateRecipeSuggestions, GenerateRecipeSuggestionsOutput } from "@/ai/flows/generate-recipe-suggestions";
@@ -10,25 +9,24 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  Clock, Sparkles, ChevronRight, ChefHat, ShoppingBasket, Plus, 
-  Flame, Info, RotateCcw, Globe, Trophy, PlayCircle, Camera, CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Utensils, Heart, TrendingUp, Users, Check
+  Clock, Sparkles, ChevronRight, ChefHat, ShoppingBasket, 
+  Flame, RotateCcw, Globe, Trophy, PlayCircle, CheckCircle2, 
+  ArrowRight, ShieldCheck, Zap, Heart, Check
 } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const REELS_MOCK = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "pasta-reel" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "spinach-rescue" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "thai-curry" },
-  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "carrots-roasted" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "pasta-gourmet" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "spinach-dish" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "thai-curry-plated" },
+  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "carrots-roasted-plated" },
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "pesto-pasta" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "tofu-stir-fry" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "greek-salad" },
+  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "pesto-pasta-plate" },
+  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "tofu-stir-fry-dish" },
+  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "greek-salad-bowl" },
 ];
 
 export default function Home() {
@@ -194,10 +192,10 @@ export default function Home() {
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-culinary/800/500`} 
+                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-culinary-dish/800/500`} 
                             alt={recipe.recipeName}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                            data-ai-hint="gourmet dish"
+                            data-ai-hint="plated recipe dish"
                           />
                           <div className="absolute top-6 left-6 flex gap-2">
                              <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
@@ -270,7 +268,7 @@ export default function Home() {
                             src={`https://picsum.photos/seed/${reel.seed}/600/1000`} 
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                             alt={reel.title}
-                            data-ai-hint="chef cooking"
+                            data-ai-hint="chef cooking recipe"
                           />
                           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
                           <div className="absolute top-6 left-6">
@@ -310,7 +308,7 @@ export default function Home() {
                         src={`https://picsum.photos/seed/${recipe.seed}/600/400`} 
                         alt={recipe.name} 
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform"
-                        data-ai-hint="plated gourmet food"
+                        data-ai-hint="gourmet plated recipe"
                       />
                       <div className="absolute top-4 left-4">
                          <Badge className="bg-white/90 text-primary border-none text-[10px] font-black">{recipe.difficulty}</Badge>
@@ -327,49 +325,6 @@ export default function Home() {
                ))}
              </div>
           </section>
-
-          {/* SaaS Pricing Section */}
-          <section className="py-24 space-y-16">
-            <div className="text-center space-y-4">
-               <h2 className="text-4xl md:text-5xl font-headline font-black">Choose Your Kitchen tier</h2>
-               <p className="text-muted-foreground text-lg max-w-xl mx-auto">Upgrade for unlimited AI scanning and gourmet blueprints.</p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-              <Card className="rounded-[3rem] border-2 border-primary/5 p-8 bg-white/50">
-                 <CardHeader className="text-center pb-8 border-b border-primary/5">
-                   <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4">Basic</h4>
-                   <h3 className="text-4xl font-black text-primary">$0</h3>
-                   <p className="text-xs font-bold text-muted-foreground uppercase mt-2">Free Forever</p>
-                 </CardHeader>
-                 <CardContent className="py-8 space-y-4">
-                   <PricingFeature text="3 Scans per day" />
-                   <PricingFeature text="Standard recipes" />
-                   <PricingFeature text="Basic nutrition" />
-                 </CardContent>
-                 <CardFooter>
-                    <Button variant="outline" className="w-full rounded-full h-12 border-primary/20">Current Plan</Button>
-                 </CardFooter>
-              </Card>
-
-              <Card className="rounded-[3rem] border-4 border-accent p-8 bg-white shadow-2xl relative overflow-hidden">
-                 <div className="absolute top-0 right-0 bg-accent text-white px-6 py-1.5 font-black text-[9px] uppercase tracking-widest rounded-bl-2xl">Recommended</div>
-                 <CardHeader className="text-center pb-8 border-b border-primary/5">
-                   <h4 className="text-xs font-black uppercase tracking-widest text-secondary mb-4">Seedling Pro</h4>
-                   <h3 className="text-4xl font-black text-primary">$1.99<span className="text-xs text-muted-foreground font-bold">/mo</span></h3>
-                   <p className="text-xs font-bold text-muted-foreground uppercase mt-2">Support Culinary AI</p>
-                 </CardHeader>
-                 <CardContent className="py-8 space-y-4">
-                   <PricingFeature text="Unlimited Scans" active />
-                   <PricingFeature text="Gourmet Blueprints" active />
-                   <PricingFeature text="Full Kitchen OS" active />
-                   <PricingFeature text="Ad-free Discovery" active />
-                 </CardContent>
-                 <CardFooter>
-                    <Button className="w-full rounded-full h-12 bg-accent hover:bg-accent/90 text-white font-black uppercase tracking-widest text-xs">Upgrade Now</Button>
-                 </CardFooter>
-              </Card>
-            </div>
-          </section>
         </div>
       </main>
 
@@ -381,8 +336,11 @@ export default function Home() {
           </div>
           <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Empowering homes with sustainable culinary intelligence.</p>
           <div className="pt-8 border-t border-white/10 flex flex-wrap justify-center gap-10 text-xs font-black uppercase tracking-[0.2em] text-white/40">
+             <Link href="/" className="hover:text-white transition-colors">Home</Link>
              <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+             <Link href="/recipes" className="hover:text-white transition-colors">Recipes</Link>
              <Link href="/pantry" className="hover:text-white transition-colors">Pantry</Link>
+             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
              <Link href="/planner" className="hover:text-white transition-colors">Meal Planner</Link>
              <Link href="/collection" className="hover:text-white transition-colors">Vault</Link>
           </div>
@@ -411,16 +369,5 @@ function ModeButton({ active, onClick, icon, label }: { active: boolean, onClick
       <span className="mr-3">{icon}</span>
       {label}
     </Button>
-  );
-}
-
-function PricingFeature({ text, active }: { text: string, active?: boolean }) {
-  return (
-    <div className="flex items-center gap-3">
-       <div className={`h-5 w-5 rounded-full flex items-center justify-center ${active ? 'bg-secondary/20 text-secondary' : 'bg-muted text-muted-foreground'}`}>
-         <Check className="h-3.5 w-3.5" />
-       </div>
-       <span className={`text-sm font-bold ${active ? 'text-primary' : 'text-muted-foreground'}`}>{text}</span>
-    </div>
   );
 }

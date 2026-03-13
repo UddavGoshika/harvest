@@ -1,8 +1,7 @@
-
 "use client";
 
 import Link from "next/link";
-import { Heart, LayoutDashboard, Calendar, ShoppingCart, ShoppingBasket, PlayCircle, ChefHat, Globe } from "lucide-react";
+import { Heart, LayoutDashboard, Calendar, ShoppingCart, ShoppingBasket, PlayCircle, ChefHat, Globe, Home } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +12,7 @@ import { Button } from "./button";
 
 export function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 border-primary/10">
       <div className="container mx-auto px-4 flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="bg-primary p-2.5 rounded-2xl shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
@@ -29,12 +28,13 @@ export function Navbar() {
           </div>
         </Link>
         <div className="flex items-center gap-1 sm:gap-3">
+          <NavLink href="/" icon={<Home className="h-4 w-4" />} label="Home" />
           <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
-          <NavLink href="/" icon={<ChefHat className="h-4 w-4" />} label="Recipes" />
+          <NavLink href="/recipes" icon={<ChefHat className="h-4 w-4" />} label="Recipes" />
           <NavLink href="/pantry" icon={<ShoppingBasket className="h-4 w-4" />} label="Pantry" />
-          <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Meal Planner" />
-          <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery List" />
-          <NavLink href="/collection" icon={<Heart className="h-4 w-4" />} label="Saved Recipes" />
+          <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Planner" />
+          <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery" />
+          <NavLink href="/collection" icon={<Heart className="h-4 w-4" />} label="Saved" />
           
           <div className="ml-2 border-l border-primary/10 pl-4 hidden md:block">
             <DropdownMenu>
