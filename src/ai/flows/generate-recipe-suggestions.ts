@@ -36,6 +36,7 @@ const RecipeSuggestionSchema = z.object({
   mysteryChallenge: z.string().optional().describe('A small challenge related to this recipe for the mystery ingredient.'),
   ingredientsUsed: z.array(z.string()),
   additionalIngredients: z.array(z.string()),
+  previewInstructions: z.array(z.string()).describe('A few high-level steps for the making process.'),
 });
 
 const GenerateRecipeSuggestionsOutputSchema = z.object({
@@ -51,7 +52,7 @@ const prompt = ai.definePrompt({
   name: 'generateRecipeSuggestionsPrompt',
   input: { schema: GenerateRecipeSuggestionsInputSchema },
   output: { schema: GenerateRecipeSuggestionsOutputSchema },
-  prompt: `You are Harvest Recipes AI, a Michelin-star chef and nutrition expert.
+  prompt: `You are Ingredia AI, a Michelin-star chef and nutrition expert.
 
 Current Mode: {{{mode}}}
 (Rescue = focus on food waste/leftovers. Global = diverse cultures. Challenge = creative/bold.)
@@ -74,7 +75,7 @@ Text: {{{ingredientText}}}
 Generate 3 unique recipes. For each, ensure:
 1. It aligns with the current Mode.
 2. Nutrition is realistic.
-3. Instructions should be creative but achievable.
+3. Provide a 'previewInstructions' list of 3-4 short, clear steps.
 4. If it's Global mode, explicitly mention the dish's culture.
 
 Generate the response in JSON format according to the output schema.`,

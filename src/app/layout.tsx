@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Harvest Recipes AI - Intelligent Recipe Generator',
-  description: 'AI-powered recipe suggestions from your ingredients.',
+  title: 'Ingredia - AI-Powered Gourmet Recipe Generator',
+  description: 'Turn your ingredients into Michelin-star recipes instantly with Ingredia AI.',
 };
 
 export default function RootLayout({

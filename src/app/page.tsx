@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Clock, Sparkles, ChevronRight, Apple, ChefHat, ShoppingBasket, Plus, 
   Flame, Info, RotateCcw, Globe, Trophy, PlayCircle, Camera, CheckCircle2, 
-  ArrowRight, ShieldCheck, Heart, Star
+  ArrowRight, ShieldCheck, Heart, Star, BookOpen, Utensils
 } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
@@ -62,8 +62,7 @@ export default function Home() {
 
   const relatedReels = useMemo(() => {
     if (!suggestions) return REELS_MOCK.slice(0, 2);
-    // Shuffle or select based on mode
-    return REELS_MOCK.sort(() => 0.5 - Math.random()).slice(0, 3);
+    return REELS_MOCK.sort(() => 0.5 - Math.random()).slice(0, 4);
   }, [suggestions]);
 
   return (
@@ -77,7 +76,7 @@ export default function Home() {
           <section className="text-center space-y-8 animate-fade-in pt-8 md:pt-16 max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-primary font-bold text-xs tracking-wider uppercase">
               <Sparkles className="h-4 w-4" />
-              AI-Powered Cooking Assistant
+              Ingredia AI - Culinary Intelligence
             </div>
             <h1 className="text-5xl md:text-7xl font-headline font-black text-primary tracking-tight leading-[1.1]">
               Turn Ingredients Into <br />
@@ -129,7 +128,7 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <RotateCcw className="h-5 w-5 text-secondary" />
-                Reduce food waste
+                Zero food waste
               </div>
             </div>
           </section>
@@ -139,7 +138,7 @@ export default function Home() {
             <section className="space-y-16 py-12">
               <div className="text-center space-y-4">
                 <h2 className="text-4xl font-headline font-bold">How It Works</h2>
-                <p className="text-muted-foreground font-medium">Simple steps to culinary perfection.</p>
+                <p className="text-muted-foreground font-medium">Simple steps to culinary perfection with Ingredia.</p>
               </div>
               <div className="grid md:grid-cols-3 gap-12">
                 <StepCard 
@@ -192,53 +191,85 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="space-y-24">
-                  <div className="grid gap-8 md:grid-cols-3">
+                  <div className="grid gap-8 lg:grid-cols-3">
                     {suggestions?.recipeSuggestions.map((recipe, idx) => (
-                      <Card key={idx} className="group flex flex-col border-none bg-white/50 backdrop-blur-sm hover:bg-white transition-all shadow-md hover:shadow-xl rounded-[2.5rem] overflow-hidden">
+                      <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}/800/500`} 
+                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-food/800/500`} 
                             alt={recipe.recipeName}
-                            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+                            data-ai-hint="gourmet food dish"
                           />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                             <Badge className="bg-white/90 text-primary border-none shadow-sm backdrop-blur-md px-3 py-1 font-bold uppercase text-[9px] rounded-full">
+                          <div className="absolute top-6 left-6 flex gap-2">
+                             <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
                                {recipe.difficultyLevel}
                              </Badge>
                              {recipe.culture && (
-                               <Badge className="bg-primary/90 text-white border-none shadow-sm px-3 py-1 font-bold uppercase text-[9px] rounded-full">
+                               <Badge className="bg-primary/95 text-white border-none shadow-sm px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
                                  {recipe.culture}
                                </Badge>
                              )}
                           </div>
                         </div>
-                        <CardHeader className="px-6 pt-6 pb-2">
-                          <CardTitle className="font-headline text-2xl text-primary line-clamp-1">
+                        <CardHeader className="px-8 pt-8 pb-4">
+                          <CardTitle className="font-headline text-3xl text-primary leading-tight">
                             {recipe.recipeName}
                           </CardTitle>
-                          <CardDescription className="line-clamp-2 text-muted-foreground italic text-sm">
+                          <CardDescription className="line-clamp-2 text-muted-foreground italic text-base">
                             {recipe.description}
                           </CardDescription>
                         </CardHeader>
-                        <CardContent className="px-6 flex-1 pt-2">
-                          <div className="flex items-center gap-4 pt-4 border-t border-primary/5">
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                              <Clock className="h-3 w-3 text-secondary" />
+                        
+                        <CardContent className="px-8 flex-1 space-y-6">
+                          <div className="flex items-center gap-6 py-4 border-y border-primary/5">
+                            <div className="flex items-center gap-2 text-[11px] font-black text-primary/70 uppercase tracking-widest">
+                              <Clock className="h-4 w-4 text-secondary" />
                               {recipe.estimatedPrepTime}
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                              <Flame className="h-3 w-3 text-secondary" />
+                            <div className="flex items-center gap-2 text-[11px] font-black text-primary/70 uppercase tracking-widest">
+                              <Flame className="h-4 w-4 text-secondary" />
                               {recipe.nutrition.calories} Cal
                             </div>
                           </div>
+                          
+                          <div className="space-y-4">
+                            <h4 className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                              <ShoppingBasket className="h-3 w-3" /> Required Ingredients
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {recipe.ingredientsUsed.slice(0, 4).map((ing, i) => (
+                                <Badge key={i} variant="outline" className="text-[10px] font-bold border-primary/10 text-primary/60 rounded-full px-3 py-0.5">
+                                  {ing}
+                                </Badge>
+                              ))}
+                              {recipe.ingredientsUsed.length > 4 && (
+                                <span className="text-[10px] font-bold text-muted-foreground">+{recipe.ingredientsUsed.length - 4} more</span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="space-y-4 pt-2">
+                            <h4 className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                              <Utensils className="h-3 w-3" /> Cooking Blueprint
+                            </h4>
+                            <div className="space-y-2">
+                              {recipe.previewInstructions?.map((step, i) => (
+                                <p key={i} className="text-[11px] text-muted-foreground font-medium flex gap-2">
+                                  <span className="text-secondary font-black">{i+1}.</span> {step}
+                                </p>
+                              ))}
+                            </div>
+                          </div>
                         </CardContent>
-                        <CardFooter className="px-6 pb-8 pt-4">
+                        
+                        <CardFooter className="px-8 pb-8 pt-6">
                           <Button 
-                            className="w-full bg-primary hover:bg-primary/90 transition-all rounded-full h-11 text-xs font-bold uppercase tracking-wider"
+                            className="w-full bg-primary hover:bg-primary/90 transition-all rounded-full h-14 text-sm font-black uppercase tracking-[0.15em] shadow-lg group"
                             onClick={() => setSelectedRecipe(recipe)}
                           >
                             Get Full Recipe
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                           </Button>
                         </CardFooter>
                       </Card>
@@ -246,30 +277,30 @@ export default function Home() {
                   </div>
 
                   {/* Related Reels Contextual Section */}
-                  <div className="space-y-8 pt-12 border-t border-primary/10">
-                    <div className="flex items-center justify-between">
-                       <h3 className="text-2xl font-headline font-bold">Related Discovery</h3>
+                  <div className="space-y-12 pt-16 border-t border-primary/10">
+                    <div className="flex items-center justify-between px-4">
+                       <h3 className="text-3xl font-headline font-bold">Related Discovery</h3>
                        <Link href="/reels">
-                         <Button variant="link" className="text-secondary font-bold">View all reels <ChevronRight className="h-4 w-4" /></Button>
+                         <Button variant="link" className="text-secondary font-bold text-lg">View all reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
                        </Link>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                       {relatedReels.map((reel) => (
-                        <div key={reel.id} className="group relative aspect-[9/16] rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all cursor-pointer">
+                        <div key={reel.id} className="group relative aspect-[9/16] rounded-[3rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all cursor-pointer">
                           <div className={`absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/40 animate-pulse`} />
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                          <div className="absolute top-4 left-4">
-                            <Badge className="bg-white/80 text-primary border-none text-[8px] rounded-full uppercase font-black">
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+                          <div className="absolute top-6 left-6">
+                            <Badge className="bg-white/90 text-primary border-none text-[9px] rounded-full uppercase font-black px-4 py-1">
                               {reel.tag}
                             </Badge>
                           </div>
-                          <div className="absolute bottom-4 left-4 right-4 text-white">
-                             <p className="font-bold text-xs truncate">{reel.title}</p>
-                             <p className="text-[10px] opacity-80">{reel.author}</p>
+                          <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                             <p className="font-black text-sm drop-shadow-md leading-tight">{reel.title}</p>
+                             <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">{reel.author}</p>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="h-12 w-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
-                              <PlayCircle className="h-6 w-6 text-white" />
+                            <div className="h-16 w-16 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center border border-white/30 shadow-2xl">
+                              <PlayCircle className="h-8 w-8 text-white" />
                             </div>
                           </div>
                         </div>
@@ -337,81 +368,23 @@ export default function Home() {
               </div>
             </section>
           )}
-
-          {/* Recipe Preview Sample Section */}
-          {!suggestions && !isLoading && (
-            <section className="bg-white/50 border border-primary/5 rounded-[3rem] p-12 md:p-20 space-y-12">
-               <div className="max-w-3xl mx-auto text-center space-y-4">
-                 <h2 className="text-3xl md:text-4xl font-headline font-bold">Sample Culinary Draft</h2>
-                 <p className="text-muted-foreground font-medium">This is what you get in seconds after scanning your pantry.</p>
-               </div>
-               <div className="grid md:grid-cols-2 gap-12 items-center">
-                  <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-primary/5 flex items-center gap-6">
-                       <div className="h-16 w-16 bg-secondary/10 rounded-2xl flex items-center justify-center">
-                          <Camera className="h-8 w-8 text-secondary" />
-                       </div>
-                       <div>
-                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Pantry Detected</p>
-                          <p className="font-headline font-bold text-primary">Salmon, Asparagus, Garlic</p>
-                       </div>
-                    </div>
-                    <div className="flex justify-center">
-                       <ArrowRight className="h-10 w-10 text-secondary animate-bounce" />
-                    </div>
-                    <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-primary/5 space-y-4">
-                       <Badge className="bg-primary text-white border-none font-bold uppercase text-[9px] rounded-full px-3">AI Recipe Drafted</Badge>
-                       <h4 className="text-2xl font-headline font-bold text-primary">Garlic-Herb Cedar Salmon</h4>
-                       <div className="flex items-center gap-4 text-xs font-bold text-muted-foreground">
-                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> 20 min</span>
-                          <span className="flex items-center gap-1"><Flame className="h-3 w-3" /> 420 Cal</span>
-                       </div>
-                    </div>
-                  </div>
-                  <div className="space-y-6 bg-primary/[0.03] p-8 rounded-[2rem] border border-primary/5">
-                     <h5 className="font-headline font-bold text-xl mb-4">Cooking Blueprint</h5>
-                     {[
-                       "Sear salmon for 4 minutes skin-side up.",
-                       "Sauté asparagus with minced garlic and olive oil.",
-                       "Drizzle with lemon zest and serve warm."
-                     ].map((step, i) => (
-                       <div key={i} className="flex gap-4">
-                          <div className="h-6 w-6 rounded-full bg-primary text-white flex-shrink-0 flex items-center justify-center text-[10px] font-black">{i+1}</div>
-                          <p className="text-sm font-medium text-muted-foreground">{step}</p>
-                       </div>
-                     ))}
-                  </div>
-               </div>
-            </section>
-          )}
-
-          {/* Community Section */}
-          <section className="text-center space-y-12 py-12">
-             <div className="space-y-2">
-               <h2 className="text-4xl font-headline font-bold">Community Creations</h2>
-               <p className="text-muted-foreground font-medium">Join 50k+ home cooks sharing their Harvest AI discoveries.</p>
-             </div>
-             <div className="flex flex-wrap justify-center gap-12">
-                <Stat icon={<Heart className="h-5 w-5 text-secondary" />} label="Recipes Saved" value="1.2M+" />
-                <Stat icon={<PlayCircle className="h-5 w-5 text-secondary" />} label="Monthly Reels" value="45k" />
-                <Stat icon={<Star className="h-5 w-5 text-secondary" />} label="Average Rating" value="4.9/5" />
-             </div>
-          </section>
         </div>
       </main>
 
-      <footer className="bg-primary py-24 mt-20 text-white rounded-t-[4rem]">
+      <footer className="bg-primary py-24 mt-20 text-white rounded-t-[5rem]">
         <div className="container mx-auto px-4 text-center space-y-12">
           <div className="flex flex-col items-center gap-4">
-            <ChefHat className="h-12 w-12 text-secondary" />
-            <span className="text-4xl font-headline font-black tracking-tight">HARVEST AI</span>
+            <ChefHat className="h-16 w-16 text-secondary" />
+            <span className="text-5xl font-headline font-black tracking-tighter uppercase">INGREDIA</span>
           </div>
-          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Sustainable cooking powered by intelligent culinary insights.</p>
-          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-center gap-8 text-sm font-bold text-white/40 uppercase tracking-widest">
+          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Sustainable culinary intelligence for the modern home cook.</p>
+          <div className="pt-8 border-t border-white/10 flex flex-wrap justify-center gap-10 text-xs font-black uppercase tracking-[0.2em] text-white/40">
              <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
              <Link href="/pantry" className="hover:text-white transition-colors">Fridge Tracker</Link>
              <Link href="/planner" className="hover:text-white transition-colors">Weekly Planner</Link>
+             <Link href="/collection" className="hover:text-white transition-colors">My Collection</Link>
           </div>
+          <p className="text-[10px] text-white/20 uppercase tracking-widest">© {new Date().getFullYear()} Ingredia AI Inc. All rights reserved.</p>
         </div>
       </footer>
 
@@ -431,10 +404,10 @@ function ModeButton({ active, onClick, icon, label }: { active: boolean, onClick
     <Button 
       variant={active ? "default" : "outline"}
       onClick={onClick}
-      className={`rounded-full px-6 h-11 font-bold transition-all border-primary/20 ${active ? 'bg-primary text-white shadow-xl' : 'text-primary hover:bg-primary/5 bg-white/50'}`}
+      className={`rounded-full px-8 h-12 font-black uppercase tracking-widest text-[10px] transition-all border-primary/20 ${active ? 'bg-primary text-white shadow-2xl scale-105' : 'text-primary hover:bg-primary/5 bg-white/50'}`}
       suppressHydrationWarning
     >
-      <span className="mr-2">{icon}</span>
+      <span className="mr-3">{icon}</span>
       {label}
     </Button>
   );
@@ -442,41 +415,29 @@ function ModeButton({ active, onClick, icon, label }: { active: boolean, onClick
 
 function StepCard({ num, title, desc, icon }: { num: string, title: string, desc: string, icon: React.ReactNode }) {
   return (
-    <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-primary/5 space-y-6 group hover:shadow-xl transition-all hover:-translate-y-2">
+    <div className="bg-white p-12 rounded-[4rem] shadow-sm border border-primary/5 space-y-6 group hover:shadow-2xl transition-all hover:-translate-y-3">
       <div className="flex items-center justify-between">
-        <div className="h-12 w-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+        <div className="h-16 w-16 bg-secondary/10 rounded-[1.5rem] flex items-center justify-center text-secondary">
           {icon}
         </div>
-        <span className="text-5xl font-black text-primary/10 group-hover:text-secondary/20 transition-colors">{num}</span>
+        <span className="text-6xl font-black text-primary/5 group-hover:text-secondary/15 transition-colors tracking-tighter">{num}</span>
       </div>
-      <h3 className="text-2xl font-headline font-bold text-primary">{title}</h3>
-      <p className="text-muted-foreground font-medium leading-relaxed">{desc}</p>
+      <h3 className="text-3xl font-headline font-bold text-primary">{title}</h3>
+      <p className="text-muted-foreground font-medium leading-relaxed text-lg">{desc}</p>
     </div>
   );
 }
 
 function FeatureLine({ icon, title, text }: { icon: React.ReactNode, title: string, text: string }) {
   return (
-    <div className="flex gap-4">
-      <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-primary/5 flex-shrink-0">
+    <div className="flex gap-6 items-start">
+      <div className="h-14 w-14 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-primary/5 flex-shrink-0">
         {icon}
       </div>
-      <div>
-        <h4 className="font-bold text-primary">{title}</h4>
+      <div className="space-y-1">
+        <h4 className="font-black text-primary uppercase text-sm tracking-widest">{title}</h4>
         <p className="text-muted-foreground text-sm leading-relaxed">{text}</p>
       </div>
-    </div>
-  );
-}
-
-function Stat({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
-  return (
-    <div className="space-y-1">
-       <div className="flex items-center justify-center gap-2 text-muted-foreground mb-2">
-          {icon}
-          <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
-       </div>
-       <p className="text-4xl font-headline font-black text-primary">{value}</p>
     </div>
   );
 }

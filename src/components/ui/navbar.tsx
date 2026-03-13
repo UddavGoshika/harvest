@@ -13,10 +13,10 @@ export function Navbar() {
           </div>
           <div className="flex flex-col">
             <span className="text-2xl font-headline font-black text-primary tracking-tighter leading-none uppercase">
-              HARVEST
+              INGREDIA
             </span>
             <span className="text-[10px] font-bold text-secondary tracking-[0.2em] uppercase leading-none mt-1">
-              AI ASSISTANT
+              AI CULINARY SUITE
             </span>
           </div>
         </Link>
