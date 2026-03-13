@@ -4,15 +4,17 @@ import { useState } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { IngredientInput } from "@/components/ingredient-input";
 import { generateRecipeSuggestions, GenerateRecipeSuggestionsOutput } from "@/ai/flows/generate-recipe-suggestions";
+import { generatePantrySuggestions, GeneratePantrySuggestionsOutput } from "@/ai/flows/generate-pantry-suggestions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, ChefHat, Sparkles, ChevronRight, Apple, Flame, Info } from "lucide-react";
+import { Clock, Sparkles, ChevronRight, Apple, ChefHat, ShoppingBasket, Plus, Flame, Info } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<GenerateRecipeSuggestionsOutput | null>(null);
+  const [pantrySuggestions, setPantrySuggestions] = useState<GeneratePantrySuggestionsOutput | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
   const [currentInput, setCurrentInput] = useState<{ photos: string[], text: string }>({ photos: [], text: "" });
 
@@ -20,12 +22,19 @@ export default function Home() {
     setIsLoading(true);
     setCurrentInput(data);
     try {
-      const result = await generateRecipeSuggestions({
-        ingredientPhotos: data.photos,
-        ingredientText: data.text,
-      });
-      setSuggestions(result);
-      // Scroll to results
+      const [recipeResult, pantryResult] = await Promise.all([
+        generateRecipeSuggestions({
+          ingredientPhotos: data.photos,
+          ingredientText: data.text,
+        }),
+        generatePantrySuggestions({
+          currentIngredients: data.text || "Fresh produce",
+        })
+      ]);
+      
+      setSuggestions(recipeResult);
+      setPantrySuggestions(pantryResult);
+      
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -37,22 +46,23 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground font-body">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-12 md:py-24">
+      <main className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-6xl mx-auto space-y-24">
           
           {/* Hero Section */}
-          <section className="text-center space-y-8 animate-fade-in">
-            <Badge variant="outline" className="px-6 py-1.5 border-primary/20 text-primary bg-white/50 backdrop-blur-sm text-sm font-semibold tracking-wide">
-              AI-Powered Culinary Assistant
-            </Badge>
-            <h1 className="text-6xl md:text-8xl font-headline font-black text-primary tracking-tight leading-[1.1]">
-              Flavor From <span className="text-accent italic">Fragments</span>
+          <section className="text-center space-y-8 animate-fade-in pt-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent font-bold text-xs tracking-widest uppercase">
+              <Sparkles className="h-4 w-4" />
+              Next-Gen Culinary AI
+            </div>
+            <h1 className="text-6xl md:text-9xl font-headline font-black text-primary tracking-tighter leading-[0.9]">
+              Eat <span className="text-accent italic">Intelligently.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
-              Turn your random ingredients into artisanal masterpieces. No more food waste, just intelligent cooking.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+              Transform your kitchen scraps into gourmet masterpieces with precision nutrition and artisanal flavor profiles.
             </p>
           </section>
 
@@ -63,140 +73,165 @@ export default function Home() {
 
           {/* Results Section */}
           {(suggestions || isLoading) && (
-            <section id="results" className="space-y-12 py-12">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <section id="results" className="space-y-16 py-12">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8 border-primary/5">
                 <div className="space-y-2">
-                  <h2 className="text-4xl font-headline font-bold text-primary flex items-center gap-3">
-                    <Sparkles className="h-8 w-8 text-accent fill-accent/20" />
-                    Curated Suggestions
+                  <h2 className="text-5xl font-headline font-bold text-primary flex items-center gap-3">
+                    Your Daily Specials
                   </h2>
-                  <p className="text-lg text-muted-foreground">High-protein, gourmet options designed specifically for your pantry.</p>
+                  <p className="text-lg text-muted-foreground font-medium">Tailored to your current inventory and nutritional needs.</p>
                 </div>
               </div>
 
               {isLoading ? (
-                <div className="grid gap-8 md:grid-cols-3">
+                <div className="grid gap-10 md:grid-cols-3">
                   {[1, 2, 3].map((i) => (
-                    <Card key={i} className="animate-pulse bg-white/50 border-primary/5 rounded-3xl overflow-hidden shadow-sm">
-                      <div className="aspect-[16/10] bg-muted" />
-                      <div className="p-8 space-y-6">
+                    <div key={i} className="animate-pulse space-y-6">
+                      <div className="aspect-[16/10] bg-muted rounded-[2.5rem]" />
+                      <div className="space-y-4 px-4">
                         <div className="h-8 w-3/4 bg-muted rounded-full" />
-                        <div className="space-y-3">
-                          <div className="h-4 w-full bg-muted rounded-full" />
-                          <div className="h-4 w-5/6 bg-muted rounded-full" />
-                        </div>
-                        <div className="flex gap-4">
-                          <div className="h-10 flex-1 bg-muted rounded-xl" />
-                        </div>
+                        <div className="h-4 w-full bg-muted rounded-full" />
                       </div>
-                    </Card>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="grid gap-10 md:grid-cols-3">
+                <div className="grid gap-12 md:grid-cols-3">
                   {suggestions?.recipeSuggestions.map((recipe, idx) => (
-                    <Card key={idx} className="group relative flex flex-col transition-all hover:-translate-y-2 hover:shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] border-none rounded-[2rem] bg-white overflow-hidden">
-                      <div className="aspect-[16/10] overflow-hidden bg-muted relative">
+                    <Card key={idx} className="group relative flex flex-col border-none bg-transparent overflow-visible">
+                      <div className="aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-muted relative shadow-2xl transition-all group-hover:-translate-y-3 group-hover:shadow-primary/20">
                         <img 
                           src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}/800/500`} 
                           alt={recipe.recipeName}
-                          className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-105"
-                          data-ai-hint="food gourmet"
+                          className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-110"
+                          data-ai-hint="gourmet dish"
                         />
-                        <div className="absolute top-4 left-4">
-                           <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-3 py-1 font-bold">
-                             {recipe.difficultyLevel.toUpperCase()}
+                        <div className="absolute top-6 left-6 flex flex-col gap-2">
+                           <Badge className="bg-white/95 text-primary border-none shadow-xl backdrop-blur-md px-4 py-1.5 font-black text-[10px] tracking-widest uppercase">
+                             {recipe.difficultyLevel}
                            </Badge>
                         </div>
-                        <div className="absolute bottom-4 left-4 right-4">
+                        <div className="absolute bottom-6 left-6 right-6">
                           <div className="flex gap-2">
-                             <Badge className="bg-accent text-accent-foreground border-none font-bold">
-                               {recipe.nutrition.calories} kcal
+                             <Badge className="bg-accent/90 text-accent-foreground border-none font-black text-[10px] tracking-widest shadow-lg">
+                               {recipe.nutrition.calories} KCAL
                              </Badge>
-                             <Badge className="bg-primary/80 text-white backdrop-blur-md border-none font-bold">
-                               {recipe.nutrition.protein} Protein
+                             <Badge className="bg-primary/80 text-white backdrop-blur-md border-none font-black text-[10px] tracking-widest shadow-lg">
+                               {recipe.nutrition.protein} PRO
                              </Badge>
                           </div>
                         </div>
                       </div>
-                      <CardHeader className="p-8 pb-4">
-                        <CardTitle className="font-headline text-3xl leading-tight group-hover:text-primary transition-colors mb-3">
+                      <CardHeader className="px-2 pt-8 pb-4">
+                        <CardTitle className="font-headline text-3xl leading-tight text-primary transition-colors mb-2">
                           {recipe.recipeName}
                         </CardTitle>
                         <CardDescription className="line-clamp-2 text-base text-muted-foreground/80 font-medium italic">
                           "{recipe.description}"
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="px-8 flex-1">
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary/5">
-                          <div className="flex items-center gap-3 text-sm font-bold text-primary/70">
-                            <Clock className="h-4 w-4 text-accent" />
+                      <CardContent className="px-2 flex-1">
+                        <div className="flex items-center gap-6 pt-4 border-t border-primary/5">
+                          <div className="flex items-center gap-2 text-[11px] font-black text-primary/40 uppercase tracking-widest">
+                            <Clock className="h-3 w-3 text-accent" />
                             {recipe.estimatedPrepTime}
                           </div>
-                          <div className="flex items-center gap-3 text-sm font-bold text-primary/70">
-                            <Info className="h-4 w-4 text-accent" />
-                            {recipe.nutrition.healthSummary}
+                          <div className="flex items-center gap-2 text-[11px] font-black text-primary/40 uppercase tracking-widest">
+                            <Info className="h-3 w-3 text-accent" />
+                            {recipe.nutrition.healthSummary.slice(0, 30)}...
                           </div>
                         </div>
                       </CardContent>
-                      <CardFooter className="p-8 pt-4">
+                      <CardFooter className="px-2 pt-6">
                         <Button 
-                          className="w-full bg-primary hover:bg-primary/90 transition-all rounded-2xl h-14 text-lg font-bold group shadow-lg"
+                          className="w-full bg-primary hover:bg-primary/90 transition-all rounded-2xl h-14 text-sm font-black tracking-widest uppercase shadow-xl hover:shadow-primary/20"
                           onClick={() => setSelectedRecipe(recipe)}
                           suppressHydrationWarning
                         >
-                          Unlock Full Recipe
-                          <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                          View Full Method
+                          <ChevronRight className="ml-2 h-4 w-4" />
                         </Button>
                       </CardFooter>
                     </Card>
                   ))}
                 </div>
               )}
+
+              {/* Pantry Suggestions Section */}
+              {pantrySuggestions && (
+                <div className="pt-20 space-y-10 animate-fade-in">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent">
+                      <ShoppingBasket className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-headline font-bold text-primary">Smart Pantry Pairings</h3>
+                      <p className="text-muted-foreground font-medium">Add these to your next list to unlock even more recipes.</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-6 md:grid-cols-4">
+                    {pantrySuggestions.suggestions.map((item, idx) => (
+                      <div key={idx} className="bg-white p-6 rounded-[2rem] border border-primary/5 shadow-sm hover:shadow-md transition-all group">
+                        <div className="flex justify-between items-start mb-4">
+                          <Badge variant="outline" className="text-[10px] font-black border-primary/10 text-primary/60 uppercase tracking-widest">
+                            {item.category}
+                          </Badge>
+                          <Plus className="h-4 w-4 text-accent group-hover:scale-125 transition-transform" />
+                        </div>
+                        <h4 className="text-xl font-headline font-bold text-primary mb-2">{item.ingredient}</h4>
+                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">{item.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
-          {/* Benefits Grid */}
+          {/* Value Props */}
           {!suggestions && !isLoading && (
             <section className="grid md:grid-cols-3 gap-16 py-24 border-t border-primary/5">
-              <div className="space-y-6 group">
-                <div className="h-20 w-20 bg-accent/10 rounded-[2rem] flex items-center justify-center text-accent transition-transform group-hover:rotate-12">
-                  <Sparkles className="h-10 w-10" />
+              <div className="space-y-6 text-center md:text-left">
+                <div className="h-16 w-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mx-auto md:mx-0">
+                  <ChefHat className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Intelligent Pairing</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Our AI uses molecular gastronomy principles to suggest flavor profiles that truly complement your ingredients.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Professional Logic</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Our AI uses culinary chemical principles to suggest pairings that truly work.</p>
               </div>
-              <div className="space-y-6 group">
-                <div className="h-20 w-20 bg-accent/10 rounded-[2rem] flex items-center justify-center text-accent transition-transform group-hover:rotate-12">
-                  <Apple className="h-10 w-10" />
+              <div className="space-y-6 text-center md:text-left">
+                <div className="h-16 w-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mx-auto md:mx-0">
+                  <Apple className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Zero Waste Living</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Stop letting fresh produce expire. Turn those "scraps" into high-nutrient meals that save money and the planet.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Nutrient Focused</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Every recipe is a health investment, calculated to the gram.</p>
               </div>
-              <div className="space-y-6 group">
-                <div className="h-20 w-20 bg-accent/10 rounded-[2rem] flex items-center justify-center text-accent transition-transform group-hover:rotate-12">
-                  <ChefHat className="h-10 w-10" />
+              <div className="space-y-6 text-center md:text-left">
+                <div className="h-16 w-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mx-auto md:mx-0">
+                  <Flame className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Data-Driven Nutrition</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Every recipe comes with a complete caloric and macronutrient breakdown for precise health tracking.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Android & iOS Ready</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Designed for touch, speed, and mobility. Take Harvest AI to the grocery store.</p>
               </div>
             </section>
           )}
         </div>
       </main>
 
-      <footer className="border-t bg-white py-20 mt-20">
-        <div className="container mx-auto px-4 text-center space-y-8">
-          <div className="flex items-center justify-center gap-3 text-primary font-headline font-black text-3xl">
-            Harvest Recipes AI
+      <footer className="bg-primary py-24 mt-20 text-white rounded-t-[4rem]">
+        <div className="container mx-auto px-4 text-center space-y-12">
+          <div className="flex flex-col items-center gap-4">
+            <div className="bg-white/10 p-4 rounded-3xl backdrop-blur-md">
+               <ChefHat className="h-10 w-10" />
+            </div>
+            <span className="text-4xl font-headline font-black tracking-tighter">HARVEST AI</span>
           </div>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto font-medium leading-relaxed">The future of home cooking is here. No more wondering "what's for dinner?".</p>
-          <div className="pt-12 border-t border-primary/5 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground font-medium">
-            <p>© 2024 Harvest Recipes AI. All rights reserved.</p>
-            <div className="flex gap-8">
-              <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
-              <a href="#" className="hover:text-primary transition-colors">Instagram</a>
+          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium leading-relaxed">Redefining the relationship between your pantry and your plate.</p>
+          <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/40 font-black tracking-widest uppercase">
+            <p>© 2024 HARVEST CULINARY SYSTEMS.</p>
+            <div className="flex gap-10">
+              <a href="#" className="hover:text-white transition-colors">Mobile App</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white transition-colors">API</a>
             </div>
           </div>
         </div>
