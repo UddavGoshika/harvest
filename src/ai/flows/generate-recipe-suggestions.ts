@@ -30,7 +30,13 @@ const RecipeSuggestionSchema = z.object({
   description: z.string().describe('A brief description of the recipe.'),
   estimatedPrepTime: z.string().describe('Estimated preparation time for the recipe (e.g., "30 minutes", "1 hour").'),
   difficultyLevel: z.enum(['easy', 'medium', 'hard']).describe('Difficulty level of the recipe.'),
-  nutritionalInformation: z.string().describe('A brief summary of the nutritional information (e.g., "High protein, low carb").'),
+  nutrition: z.object({
+    calories: z.number().describe('Estimated calories per serving.'),
+    protein: z.string().describe('Protein content (e.g., "20g").'),
+    carbs: z.string().describe('Carbs content (e.g., "30g").'),
+    fat: z.string().describe('Fat content (e.g., "10g").'),
+    healthSummary: z.string().describe('A one-sentence summary of the nutritional benefit.'),
+  }).describe('Detailed nutritional breakdown.'),
   ingredientsUsed: z.array(z.string()).describe('List of ingredients from the user\'s input that are used in this recipe.'),
   additionalIngredients: z.array(z.string()).describe('List of ingredients required for the recipe that are NOT present in the user\'s input.'),
 });
@@ -50,7 +56,30 @@ const prompt = ai.definePrompt({
   name: 'generateRecipeSuggestionsPrompt',
   input: { schema: GenerateRecipeSuggestionsInputSchema },
   output: { schema: GenerateRecipeSuggestionsOutputSchema },
-  prompt: `You are an expert culinary AI, skilled at creating novel and suitable recipes from available ingredients and user preferences.\n\nAnalyze the provided ingredients (from photos and text) and generate 3 unique recipe suggestions. For each recipe, include the following details: recipe name, a brief description, estimated preparation time, difficulty level (easy, medium, hard), a brief nutritional summary, a list of ingredients from the user's input that are used, and a list of any additional ingredients needed.\n\nStrictly adhere to the user's dietary preferences, cooking time preference, and difficulty preference. If preferences are not provided, use your best culinary judgment to create balanced and appealing options.\n\nAvailable Ingredients:\n{{#if ingredientPhotos}}\n  {{#each ingredientPhotos}}\nPhoto: {{media url=this}}\n  {{/each}}\n{{/if}}\n{{#if ingredientText}}\nText: {{{ingredientText}}}\n{{/if}}\n\nDietary Preferences: {{{dietaryPreferences}}}\nCooking Time Preference: {{{cookingTimePreference}}}\nDifficulty Preference: {{{difficultyPreference}}}\n\nGenerate the response in JSON format according to the output schema.`,
+  prompt: `You are an expert culinary AI and nutritionist. Your task is to generate 3 unique, gourmet recipe suggestions based on available ingredients and user preferences.
+
+For each recipe, you MUST provide:
+1. A creative recipe name.
+2. A compelling description.
+3. Realistic estimated prep time and difficulty.
+4. Comprehensive nutritional data including approximate calories, protein, carbs, and fat per serving.
+5. A list of user ingredients used and any extras needed.
+
+Strictly adhere to dietary preferences: {{{dietaryPreferences}}}.
+Cooking time: {{{cookingTimePreference}}}.
+Difficulty: {{{difficultyPreference}}}.
+
+Available Ingredients:
+{{#if ingredientPhotos}}
+  {{#each ingredientPhotos}}
+Photo: {{media url=this}}
+  {{/each}}
+{{/if}}
+{{#if ingredientText}}
+Text: {{{ingredientText}}}
+{{/if}}
+
+Generate the response in JSON format according to the output schema.`,
 });
 
 const generateRecipeSuggestionsFlow = ai.defineFlow(
