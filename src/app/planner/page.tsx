@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Clock, ChefHat, Trash2, ChevronRight, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { RecipeDetail } from "@/components/recipe-detail";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export default function PlannerPage() {
   const [planner, setPlanner] = useState<Record<string, any[]>>({});
+  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
 
   useEffect(() => {
     const savedPlanner = JSON.parse(localStorage.getItem("harvest_meal_planner") || "{}");
@@ -71,7 +73,11 @@ export default function PlannerPage() {
                           <CardDescription className="line-clamp-2 text-sm italic">{recipe.description}</CardDescription>
                         </CardHeader>
                         <CardFooter className="p-4 pt-0">
-                          <Button variant="outline" className="w-full text-[10px] font-black uppercase tracking-widest border-primary/10 hover:bg-primary/5 transition-all h-8">
+                          <Button 
+                            variant="outline" 
+                            className="w-full text-[10px] font-black uppercase tracking-widest border-primary/10 hover:bg-primary/5 transition-all h-8"
+                            onClick={() => setSelectedRecipe(recipe)}
+                          >
                              View Details
                              <ChevronRight className="ml-2 h-3 w-3" />
                           </Button>
@@ -92,6 +98,15 @@ export default function PlannerPage() {
           </div>
         </div>
       </main>
+
+      {selectedRecipe && (
+        <RecipeDetail 
+          recipe={selectedRecipe} 
+          onClose={() => setSelectedRecipe(null)} 
+          availableIngredients={[]} 
+        />
+      )}
+
     </div>
   );
 }

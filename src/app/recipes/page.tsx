@@ -7,34 +7,99 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Flame, ChevronRight, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { RecipeDetail } from "@/components/recipe-detail";
 
 const CATEGORIES = [
   "Indian Regional", "Global Fusion", "Quick & Easy", "Leftover Rescue", "Healthy Bites", "Vegetarian", "Desserts"
 ];
 
 const ALL_RECIPES = [
-  { name: "North Indian Paneer Tikka", category: "Indian Regional", time: "25 min", cal: 350, difficulty: "Medium", seed: "201", hint: "paneer tikka" },
-  { name: "South Indian Sambar", category: "Indian Regional", time: "30 min", cal: 180, difficulty: "Easy", seed: "202", hint: "indian sambar" },
-  { name: "Thai Basil Chicken", category: "Global Fusion", time: "15 min", cal: 420, difficulty: "Easy", seed: "203", hint: "thai chicken" },
-  { name: "Quinoa Veggie Bowl", category: "Healthy Bites", time: "10 min", cal: 290, difficulty: "Easy", seed: "204", hint: "quinoa bowl" },
-  { name: "Spinach & Cheese Pasta", category: "Quick & Easy", time: "15 min", cal: 450, difficulty: "Easy", seed: "205", hint: "spinach pasta" },
-  { name: "Rescue Veggie Stir-fry", category: "Leftover Rescue", time: "12 min", cal: 210, difficulty: "Easy", seed: "206", hint: "vegetable stirfry" },
-  { name: "Hyderabadi Chicken Biryani", category: "Indian Regional", time: "50 min", cal: 650, difficulty: "Hard", seed: "207", hint: "chicken biryani" },
-  { name: "Classic Italian Margherita", category: "Global Fusion", time: "20 min", cal: 550, difficulty: "Medium", seed: "208", hint: "margherita pizza" },
-  { name: "Japanese Miso Ramen", category: "Global Fusion", time: "35 min", cal: 480, difficulty: "Medium", seed: "209", hint: "miso ramen" },
-  { name: "Mexican Street Tacos", category: "Global Fusion", time: "15 min", cal: 380, difficulty: "Easy", seed: "210", hint: "street tacos" },
-  { name: "Gujarati Dhokla", category: "Indian Regional", time: "25 min", cal: 150, difficulty: "Medium", seed: "211", hint: "khaman dhokla" },
-  { name: "Low-Carb Zucchini Noodles", category: "Healthy Bites", time: "12 min", cal: 120, difficulty: "Easy", seed: "212", hint: "zucchini noodles" },
-  { name: "Kerala Fish Curry", category: "Indian Regional", time: "40 min", cal: 320, difficulty: "Medium", seed: "213", hint: "kerala fish curry" },
-  { name: "American Cheeseburger", category: "Global Fusion", time: "15 min", cal: 720, difficulty: "Easy", seed: "214", hint: "gourmet burger" },
-  { name: "Indian Gajar Ka Halwa", category: "Desserts", time: "45 min", cal: 280, difficulty: "Medium", seed: "215", hint: "carrot halwa" },
-  { name: "Berry Greek Yogurt Parfait", category: "Healthy Bites", time: "5 min", cal: 180, difficulty: "Easy", seed: "216", hint: "yogurt parfait" },
-  { name: "Leftover Rice Fried Rice", category: "Leftover Rescue", time: "10 min", cal: 340, difficulty: "Easy", seed: "217", hint: "egg fried rice" },
-  { name: "Classic French Crepes", category: "Global Fusion", time: "20 min", cal: 240, difficulty: "Medium", seed: "218", hint: "french crepes" },
+  { 
+    recipeName: "North Indian Paneer Tikka", 
+    category: "Indian Regional", 
+    estimatedPrepTime: "25 min", 
+    nutrition: { calories: 350, protein: "18g", carbs: "12g", fat: "22g" },
+    difficultyLevel: "Medium", 
+    imageUrl: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?q=80&w=800",
+    description: "Classic marinated paneer cubes grilled to perfection with aromatic spices."
+  },
+  { 
+    recipeName: "South Indian Sambar", 
+    category: "Indian Regional", 
+    estimatedPrepTime: "30 min", 
+    nutrition: { calories: 180, protein: "8g", carbs: "32g", fat: "4g" },
+    difficultyLevel: "Easy", 
+    imageUrl: "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?q=80&w=800",
+    description: "Hearty lentil-based vegetable stew with tamarind and unique spices."
+  },
+  { 
+    recipeName: "Thai Basil Chicken", 
+    category: "Global Fusion", 
+    estimatedPrepTime: "15 min", 
+    nutrition: { calories: 420, protein: "35g", carbs: "12g", fat: "26g" },
+    difficultyLevel: "Easy", 
+    imageUrl: "https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=800",
+    description: "Spicy and fragrant stir-fry with holy basil and tender chicken."
+  },
+  { 
+    recipeName: "Quinoa Veggie Bowl", 
+    category: "Healthy Bites", 
+    estimatedPrepTime: "10 min", 
+    nutrition: { calories: 290, protein: "12g", carbs: "45g", fat: "8g" },
+    difficultyLevel: "Easy", 
+    imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800",
+    description: "Nutritious power bowl with fluffy quinoa and seasonal vegetables."
+  },
+  { 
+    recipeName: "Spinach & Cheese Pasta", 
+    category: "Quick & Easy", 
+    estimatedPrepTime: "15 min", 
+    nutrition: { calories: 450, protein: "15g", carbs: "58g", fat: "18g" },
+    difficultyLevel: "Easy", 
+    imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800",
+    description: "Creamy fettuccine with fresh spinach and a blend of gourmet cheeses."
+  },
+  { 
+    recipeName: "Rescue Veggie Stir-fry", 
+    category: "Leftover Rescue", 
+    estimatedPrepTime: "12 min", 
+    nutrition: { calories: 210, protein: "6g", carbs: "28g", fat: "10g" },
+    difficultyLevel: "Easy", 
+    imageUrl: "https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?q=80&w=800",
+    description: "A quick way to rescue any vegetables in your fridge into a tasty stir-fry."
+  },
+  { 
+    recipeName: "Hyderabadi Chicken Biryani", 
+    category: "Indian Regional", 
+    estimatedPrepTime: "50 min", 
+    nutrition: { calories: 650, protein: "42g", carbs: "75g", fat: "22g" },
+    difficultyLevel: "Hard", 
+    imageUrl: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?q=80&w=800",
+    description: "Iconic slow-cooked rice dish with marinated chicken and saffron."
+  },
+  { 
+    recipeName: "Classic Italian Margherita", 
+    category: "Global Fusion", 
+    estimatedPrepTime: "20 min", 
+    nutrition: { calories: 550, protein: "22g", carbs: "68g", fat: "24g" },
+    difficultyLevel: "Medium", 
+    imageUrl: "https://images.unsplash.com/photo-1574071318508-1cdbad80ad50?q=80&w=800",
+    description: "Simple yet perfect pizza with tomato, fresh mozzarella, and basil."
+  },
+  { 
+    recipeName: "Japanese Miso Ramen", 
+    category: "Global Fusion", 
+    estimatedPrepTime: "35 min", 
+    nutrition: { calories: 480, protein: "25g", carbs: "62g", fat: "16g" },
+    difficultyLevel: "Medium", 
+    imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=800",
+    description: "Comforting noodle soup with rich miso broth and traditional toppings."
+  },
 ];
 
 export default function RecipesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
 
   const filteredRecipes = activeCategory === "All" 
     ? ALL_RECIPES 
@@ -85,13 +150,16 @@ export default function RecipesPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredRecipes.map((recipe, idx) => (
-              <Card key={idx} className="rounded-[2.5rem] overflow-hidden border-none shadow-lg group hover:shadow-2xl transition-all cursor-pointer bg-white">
+              <Card 
+                key={idx} 
+                className="rounded-[2.5rem] overflow-hidden border-none shadow-lg group hover:shadow-2xl transition-all cursor-pointer bg-white"
+                onClick={() => setSelectedRecipe(recipe)}
+              >
                 <div className="aspect-[16/10] overflow-hidden relative">
                    <img 
-                     src={`https://picsum.photos/seed/${recipe.seed}/800/500`} 
-                     alt={recipe.name} 
+                     src={recipe.imageUrl} 
+                     alt={recipe.recipeName} 
                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
-                     data-ai-hint={recipe.hint}
                    />
                    <div className="absolute top-4 left-4 flex gap-2">
                       <Badge className="bg-white/95 text-primary border-none text-[10px] font-black px-3 py-1 rounded-full">
@@ -100,21 +168,39 @@ export default function RecipesPage() {
                    </div>
                 </div>
                 <CardHeader className="p-6">
-                   <CardTitle className="text-2xl font-headline font-bold text-primary group-hover:text-secondary transition-colors">{recipe.name}</CardTitle>
+                   <CardTitle className="text-2xl font-headline font-bold text-primary group-hover:text-secondary transition-colors">
+                     {recipe.recipeName}
+                   </CardTitle>
                    <div className="flex items-center gap-4 text-[11px] font-black uppercase text-muted-foreground mt-3 tracking-widest">
-                      <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-secondary" /> {recipe.time}</span>
-                      <span className="flex items-center gap-1"><Flame className="h-4 w-4 text-secondary" /> {recipe.cal} Cal</span>
-                      <span className="ml-auto flex items-center gap-1 text-primary"><Filter className="h-3 w-3" /> {recipe.difficulty}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-secondary" /> {recipe.estimatedPrepTime}</span>
+                      <span className="flex items-center gap-1"><Flame className="h-4 w-4 text-secondary" /> {recipe.nutrition.calories} Cal</span>
+                      <span className="ml-auto flex items-center gap-1 text-primary"><Filter className="h-3 w-3" /> {recipe.difficultyLevel}</span>
                    </div>
                 </CardHeader>
                 <CardFooter className="px-6 pb-6 pt-0">
-                  <Button variant="ghost" className="w-full rounded-full border border-primary/10 hover:bg-primary/5 text-xs font-black uppercase tracking-widest" suppressHydrationWarning>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full rounded-full border border-primary/10 hover:bg-primary/5 text-xs font-black uppercase tracking-widest"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedRecipe(recipe);
+                    }}
+                    suppressHydrationWarning
+                  >
                     View Blueprint <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
+
+          {selectedRecipe && (
+            <RecipeDetail 
+              recipe={selectedRecipe} 
+              onClose={() => setSelectedRecipe(null)} 
+              availableIngredients={[]}
+            />
+          )}
 
         </div>
       </main>

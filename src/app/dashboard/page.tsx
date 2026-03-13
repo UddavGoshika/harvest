@@ -12,11 +12,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
+import { RecipeDetail } from "@/components/recipe-detail";
 
 export default function DashboardPage() {
   const [pantryItems, setPantryItems] = useState<any[]>([]);
   const [planner, setPlanner] = useState<any>({});
   const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
 
   useEffect(() => {
     const p = JSON.parse(localStorage.getItem("harvest_pantry") || "[]");
@@ -40,7 +42,7 @@ export default function DashboardPage() {
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto space-y-12">
-          
+
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1">
               <h1 className="text-4xl md:text-5xl font-headline font-black text-primary">Kitchen Dashboard</h1>
@@ -56,7 +58,7 @@ export default function DashboardPage() {
           </header>
 
           <div className="grid md:grid-cols-3 gap-8">
-            
+
             {/* Pantry Pulse */}
             <Card className="md:col-span-2 rounded-[3rem] border-none shadow-xl bg-white overflow-hidden">
               <CardHeader className="p-10 border-b border-primary/5 flex flex-row items-center justify-between">
@@ -125,7 +127,11 @@ export default function DashboardPage() {
                   {todayMeals.length > 0 ? (
                     <div className="space-y-6">
                        {todayMeals.map((meal: any, i: number) => (
-                         <div key={i} className="bg-white/10 p-5 rounded-2xl border border-white/10 hover:bg-white/20 transition-all cursor-pointer group">
+                         <div
+                           key={i}
+                           className="bg-white/10 p-5 rounded-2xl border border-white/10 hover:bg-white/20 transition-all cursor-pointer group"
+                           onClick={() => setSelectedRecipe(meal)}
+                         >
                            <div className="flex justify-between items-start mb-2">
                              <h5 className="font-bold text-lg leading-tight">{meal.recipeName}</h5>
                              <ArrowUpRight className="h-4 w-4 text-white/40 group-hover:text-white transition-colors" />
@@ -162,6 +168,14 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
+      {selectedRecipe && (
+        <RecipeDetail 
+          recipe={selectedRecipe} 
+          onClose={() => setSelectedRecipe(null)} 
+          availableIngredients={[]} 
+        />
+      )}
     </div>
   );
 }

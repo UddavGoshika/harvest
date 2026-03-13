@@ -7,14 +7,14 @@ import { Heart, MessageCircle, Share2, Play, Pause, ChevronDown, ChevronUp } fro
 import { Button } from "@/components/ui/button";
 
 const REELS = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", seed: "501", hint: "chef pasta" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", seed: "502", hint: "spinach cooking" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", seed: "503", hint: "thai cooking" },
-  { id: 4, author: "@street_foodie", title: "Mumbai Style Pav Bhaji", likes: "18.2k", seed: "504", hint: "mumbai street food" },
-  { id: 5, author: "@dessert_queen", title: "3-Ingredient Chocolate Cake", likes: "45.1k", seed: "505", hint: "chocolate cake" },
-  { id: 6, author: "@vegan_vibes", title: "Creamy Cashew Cheese Sauce", likes: "9.5k", seed: "506", hint: "vegan cheese" },
-  { id: 7, author: "@fitness_kitchen", title: "High Protein Egg White Wrap", likes: "14.3k", seed: "507", hint: "egg wrap" },
-  { id: 8, author: "@spice_master", title: "Secret Garam Masala Blend", likes: "32.8k", seed: "508", hint: "indian spices" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", imageUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?q=80&w=800" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", imageUrl: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=800" },
+  { id: 4, author: "@street_foodie", title: "Mumbai Style Pav Bhaji", likes: "18.2k", imageUrl: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=800" },
+  { id: 5, author: "@dessert_queen", title: "3-Ingredient Chocolate Cake", likes: "45.1k", imageUrl: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=800" },
+  { id: 6, author: "@vegan_vibes", title: "Creamy Cashew Cheese Sauce", likes: "9.5k", imageUrl: "https://images.unsplash.com/photo-1546069901-e5161476b701?q=80&w=800" },
+  { id: 7, author: "@fitness_kitchen", title: "High Protein Egg White Wrap", likes: "14.3k", imageUrl: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=800" },
+  { id: 8, author: "@spice_master", title: "Secret Garam Masala Blend", likes: "32.8k", imageUrl: "https://images.unsplash.com/photo-1589301773818-03714652233f?q=80&w=800" },
 ];
 
 export default function ReelsPage() {
@@ -29,10 +29,9 @@ export default function ReelsPage() {
           {/* Reel Content Background */}
           <div className="absolute inset-0 transition-opacity duration-500">
              <img 
-               src={`https://picsum.photos/seed/${REELS[activeIdx].seed}/600/1000`} 
+               src={REELS[activeIdx].imageUrl} 
                alt={REELS[activeIdx].title}
                className="w-full h-full object-cover"
-               data-ai-hint={REELS[activeIdx].hint}
              />
           </div>
 

@@ -16,25 +16,32 @@ import {
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
 
+import { initializeDatabase, SEED_REELS } from "@/lib/seed-data";
+import { useEffect } from "react";
+
 const REELS_MOCK = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", seed: "301", hint: "gourmet pasta" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "302", hint: "spinach dish" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "303", hint: "thai curry" },
-  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "304", hint: "roasted carrots" },
-  { id: 5, author: "@mumbai_street", title: "Pav Bhaji Masterclass", likes: "42k", tag: "Indian", seed: "305", hint: "pav bhaji" },
-  { id: 6, author: "@sushi_guru", title: "Perfect Sushi Roll at Home", likes: "15k", tag: "Japanese", seed: "306", hint: "sushi platter" },
+  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800" },
+  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", imageUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?q=80&w=800" },
+  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", imageUrl: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=800" },
+  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", imageUrl: "https://images.unsplash.com/photo-1598170845058-32b996a7aca0?q=80&w=800" },
+  { id: 5, author: "@mumbai_street", title: "Pav Bhaji Masterclass", likes: "42k", tag: "Indian", imageUrl: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=800" },
+  { id: 6, author: "@sushi_guru", title: "Perfect Sushi Roll at Home", likes: "15k", tag: "Japanese", imageUrl: "https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800" },
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "307", hint: "pesto pasta" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "308", hint: "tofu stirfry" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "309", hint: "mediterranean salad" },
-  { name: "Butter Chicken Masala", time: "45 min", cal: 580, difficulty: "Medium", seed: "310", hint: "butter chicken" },
-  { name: "Avocado Toast Bliss", time: "5 min", cal: 210, difficulty: "Easy", seed: "311", hint: "avocado toast" },
-  { name: "Classic French Onion Soup", time: "60 min", cal: 340, difficulty: "Hard", seed: "312", hint: "onion soup" },
+  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600", hint: "pesto pasta" },
+  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", imageUrl: "https://images.unsplash.com/photo-1546069901-e5161476b701?q=80&w=600", hint: "tofu stirfry" },
+  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=600", hint: "mediterranean salad" },
+  { name: "Butter Chicken Masala", time: "45 min", cal: 580, difficulty: "Medium", imageUrl: "https://images.unsplash.com/photo-1603894584202-933259aba79e?q=80&w=600", hint: "butter chicken" },
+  { name: "Avocado Toast Bliss", time: "5 min", cal: 210, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=600", hint: "avocado toast" },
+  { name: "Classic French Onion Soup", time: "60 min", cal: 340, difficulty: "Hard", imageUrl: "https://images.unsplash.com/photo-1510627498534-cf7c9002facc?q=80&w=600", hint: "onion soup" },
 ];
 
 export default function Home() {
+  useEffect(() => {
+    initializeDatabase();
+  }, []);
+
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<GenerateRecipeSuggestionsOutput | null>(null);
   const [pantrySuggestions, setPantrySuggestions] = useState<GeneratePantrySuggestionsOutput | null>(null);
@@ -122,6 +129,15 @@ export default function Home() {
                 label="Mystery Challenge"
               />
             </div>
+
+            <div className="h-6 flex items-center justify-center">
+              <p className="text-sm font-bold text-secondary text-center animate-fade-in" key={activeMode}>
+                {activeMode === 'standard' && "AI designs balanced gourmet recipes from your available ingredients."}
+                {activeMode === 'rescue' && "Saves ingredients about to expire by turning them into delicious, low-waste meals."}
+                {activeMode === 'global' && "Fuses your local ingredients with exotic world cuisines for unique flavor profiles."}
+                {activeMode === 'challenge' && "A gamified experience where the AI gives you a secret ingredient to master."}
+              </p>
+            </div>
           </section>
 
           {/* Core Input Section */}
@@ -176,7 +192,7 @@ export default function Home() {
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/40${idx}/800/500`} 
+                            src={(recipe as any).imageUrl || `https://images.unsplash.com/photo-1546069901-ba95996fef17?q=80&w=800`} 
                             alt={recipe.recipeName}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                             data-ai-hint="plated gourmet dish"
@@ -248,12 +264,23 @@ export default function Home() {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                       {relatedReels.map((reel) => (
-                        <div key={reel.id} className="group relative aspect-[9/16] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-primary/10 transition-all cursor-pointer">
+                        <div 
+                          key={reel.id} 
+                          className="group relative aspect-[9/16] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-primary/10 transition-all cursor-pointer"
+                          onClick={() => setSelectedRecipe({
+                            recipeName: reel.title,
+                            description: `A trending creation by ${reel.author}`,
+                            estimatedPrepTime: "15 min",
+                            nutrition: { calories: 450, protein: "12g", carbs: "45g", fat: "15g" },
+                            difficultyLevel: "Easy",
+                            imageUrl: reel.imageUrl,
+                            ingredientsUsed: []
+                          })}
+                        >
                           <img 
-                            src={`https://picsum.photos/seed/${reel.seed}/600/1000`} 
+                            src={reel.imageUrl} 
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                             alt={reel.title}
-                            data-ai-hint={reel.hint}
                           />
                           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
                           <div className="absolute top-4 left-4">
@@ -290,13 +317,24 @@ export default function Home() {
              </div>
              <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
                {TRENDING_RECIPES.map((recipe, idx) => (
-                 <Card key={idx} className="rounded-[2rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer">
+                 <Card 
+                  key={idx} 
+                  className="rounded-[2rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer"
+                  onClick={() => setSelectedRecipe({
+                    recipeName: recipe.name,
+                    description: `A popular choice in our community.`,
+                    estimatedPrepTime: recipe.time,
+                    nutrition: { calories: recipe.cal, protein: "15g", carbs: "50g", fat: "12g" },
+                    difficultyLevel: recipe.difficulty,
+                    imageUrl: recipe.imageUrl,
+                    ingredientsUsed: []
+                  })}
+                 >
                    <div className="aspect-[16/10] overflow-hidden relative">
                       <img 
-                        src={`https://picsum.photos/seed/${recipe.seed}/600/400`} 
+                        src={recipe.imageUrl} 
                         alt={recipe.name} 
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform"
-                        data-ai-hint={recipe.hint}
                       />
                       <div className="absolute top-2 left-2">
                          <Badge className="bg-white/90 text-primary border-none text-[8px] font-black">{recipe.difficulty}</Badge>
