@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-cooking",
+      "description": "A beautiful kitchen with fresh vegetables and herbs",
+      "imageUrl": "https://picsum.photos/seed/harvest1/1200/600",
+      "imageHint": "fresh vegetables"
+    },
+    {
+      "id": "ingredients-basket",
+      "description": "A wooden basket filled with seasonal produce",
+      "imageUrl": "https://picsum.photos/seed/harvest2/600/400",
+      "imageHint": "food basket"
+    }
+  ]
 }
