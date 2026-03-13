@@ -80,7 +80,7 @@ export default function Home() {
             </div>
             <h1 className="text-5xl md:text-7xl font-headline font-black tracking-tight leading-[1.1]">
               <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-                Delicious Recipes Instantly.
+               Turn Your Ingredients <br/>In To <br/>Delicious Recipes Instantly.
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">

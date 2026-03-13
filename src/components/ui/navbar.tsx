@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ChefHat, Calendar, CreditCard, ShoppingBasket, PlayCircle, Sparkles } from "lucide-react";
+import { Heart, LayoutDashboard, Calendar, ShoppingCart, ShoppingBasket, PlayCircle, Sparkles } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -16,30 +16,29 @@ export function Navbar() {
               INGREDIA
             </span>
             <span className="text-[10px] font-bold text-secondary tracking-[0.2em] uppercase leading-none mt-1">
-              AI CULINARY SUITE
+              AI KITCHEN OS
             </span>
           </div>
         </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/reels" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
-            <PlayCircle className="h-4 w-4 text-secondary" />
-            <span className="hidden md:inline">Reels</span>
-          </Link>
-          <Link href="/pantry" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
-            <ShoppingBasket className="h-4 w-4 text-secondary" />
-            <span className="hidden md:inline">Fridge</span>
-          </Link>
-          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
-            <Calendar className="h-4 w-4 text-secondary" />
-            <span className="hidden md:inline">Planner</span>
-          </Link>
-          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
-            <Heart className="h-4 w-4 text-secondary fill-secondary/10" />
-            <span className="hidden md:inline">Vault</span>
-          </Link>
+        <div className="flex items-center gap-1 sm:gap-3">
+          <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+          <NavLink href="/reels" icon={<PlayCircle className="h-4 w-4" />} label="Discovery" />
+          <NavLink href="/pantry" icon={<ShoppingBasket className="h-4 w-4" />} label="Fridge" />
+          <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Planner" />
+          <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery" />
+          <NavLink href="/collection" icon={<Heart className="h-4 w-4" />} label="Vault" />
         </div>
       </div>
     </nav>
+  );
+}
+
+function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) {
+  return (
+    <Link href={href} className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-3 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+      <span className="text-secondary">{icon}</span>
+      <span className="hidden lg:inline">{label}</span>
+    </Link>
   );
 }
 

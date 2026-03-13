@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    /* Background #F6F8F5 */
-    --background: 90 14% 97%;
+    /* Background #F5F7F4 */
+    --background: 100 5% 96%;
     /* Text #1B1B1B */
     --foreground: 0 0% 11%;
     
@@ -17,16 +17,15 @@
     
     /* Primary #2E7D32 - Earthy Green */
     --primary: 123 46% 34%;
-    --primary-foreground: 90 14% 97%;
+    --primary-foreground: 100 5% 96%;
     
     /* Secondary #66BB6A - Accent Green */
     --secondary: 123 41% 60%;
     --secondary-foreground: 123 46% 15%;
     
-    --muted: 90 10% 92%;
+    --muted: 100 5% 92%;
     --muted-foreground: 0 0% 40%;
     
-    /* Accent uses fresh green */
     --accent: 123 41% 60%;
     --accent-foreground: 123 46% 15%;
     
@@ -37,7 +36,7 @@
     --input: 123 46% 34% / 0.1;
     --ring: 123 46% 34%;
     
-    --radius: 1.25rem;
+    --radius: 1.5rem;
   }
 }
 
@@ -72,6 +71,14 @@
 }
 
 /* Custom Gradients */
+.bg-gradient-primary {
+  @apply bg-gradient-to-r from-[#2E7D32] to-[#66BB6A];
+}
+
 .text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#2E7D32] to-[#66BB6A];
+}
+
+.glass-card {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
 }

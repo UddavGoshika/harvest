@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft, Share2, ShoppingCart } from "lucide-react";
+import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft, Share2, ShoppingCart, Wand2, CookingPot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -68,7 +68,6 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
 
       recognitionRef.current.onresult = (event: any) => {
         const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-        console.log("Voice Command:", transcript);
         if (transcript.includes("next step") || transcript.includes("next")) {
           handleNextStep();
         } else if (transcript.includes("previous step") || transcript.includes("back")) {
@@ -77,7 +76,6 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
       };
 
       recognitionRef.current.onerror = (event: any) => {
-        console.error("Speech Recognition Error:", event.error);
         setIsListening(false);
       };
     }
@@ -90,7 +88,7 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
     } else {
       recognitionRef.current?.start();
       setIsListening(true);
-      toast({ title: "Voice Control Active", description: 'Try saying "Next step" or "Previous step"' });
+      toast({ title: "Voice Control Active", description: 'Say "Next step" or "Previous step"' });
     }
   };
 
@@ -109,12 +107,12 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
   const saveToCollection = () => {
     const saved = JSON.parse(localStorage.getItem("harvest_saved_recipes") || "[]");
     if (saved.find((r: any) => r.recipeName === recipe.recipeName)) {
-      toast({ title: "Already saved", description: "This recipe is already in your collection." });
+      toast({ title: "Already saved" });
       return;
     }
     const updated = [...saved, { ...recipe, details }];
     localStorage.setItem("harvest_saved_recipes", JSON.stringify(updated));
-    toast({ title: "Saved to Collection", description: `${recipe.recipeName} is now in your vault.` });
+    toast({ title: "Saved to Collection" });
   };
 
   const addToPlanner = (day: string) => {
@@ -122,206 +120,152 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
     if (!planner[day]) planner[day] = [];
     planner[day].push({ ...recipe, details });
     localStorage.setItem("harvest_meal_planner", JSON.stringify(planner));
-    toast({ title: "Added to Planner", description: `${recipe.recipeName} added to ${day}.` });
+    toast({ title: "Added to Planner", description: `Added to ${day}` });
   };
 
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
         title: recipe.recipeName,
-        text: `Check out this recipe I generated on Ingredia: ${recipe.recipeName}`,
+        text: `Check out this AI recipe from Ingredia: ${recipe.recipeName}`,
         url: window.location.href,
-      }).catch(console.error);
-    } else {
-      toast({ title: "Sharing not supported", description: "Your browser doesn't support direct sharing." });
+      }).catch(() => {});
     }
   };
 
-  const handleOrder = (app: 'Swiggy' | 'Zomato') => {
-    toast({ title: `Opening ${app}`, description: `Redirecting to ${app} to order missing ingredients.` });
-    // In a real app, this would use a deep link or API
+  const handleOrder = (app: string) => {
+    toast({ title: `Opening ${app}`, description: `Getting missing ingredients for you.` });
     window.open(`https://www.${app.toLowerCase()}.com`, '_blank');
   };
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[95vh] p-0 overflow-hidden flex flex-col bg-white border-none rounded-[2.5rem] shadow-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden flex flex-col bg-[#F5F7F4] border-none rounded-[3rem] shadow-2xl">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-6 bg-primary/5">
             <div className="relative">
                <div className="h-16 w-16 border-4 border-primary/10 border-t-primary animate-spin rounded-full" />
                <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-primary animate-pulse" />
             </div>
-            <p className="text-primary text-xl font-headline font-bold">Refining your culinary blueprint...</p>
+            <p className="text-primary text-xl font-headline font-bold">Drafting your Kitchen Blueprint...</p>
           </div>
         ) : details ? (
           <>
-            {/* Header */}
-            <div className="p-8 md:p-12 border-b bg-gradient-to-br from-primary/10 via-primary/5 to-white relative">
-              <div className="flex justify-between items-start mb-8">
+            <div className="p-8 md:p-12 border-b bg-white relative">
+              <div className="flex justify-between items-start mb-6">
                 <div className="flex gap-2">
-                  <Badge className="bg-primary text-white border-none font-bold px-4 py-1.5 rounded-full shadow-sm">
+                  <Badge className="bg-primary text-white border-none font-bold px-4 py-1.5 rounded-full">
                     {details.difficultyLevel.toUpperCase()}
                   </Badge>
-                  <Badge className="bg-white/80 backdrop-blur-sm text-primary border border-primary/10 font-bold px-4 py-1.5 rounded-full shadow-sm">
+                  <Badge variant="outline" className="border-primary/20 text-primary font-bold px-4 py-1.5 rounded-full">
                     {details.estimatedPrepTime}
                   </Badge>
                 </div>
                 <div className="flex gap-2">
-                  <Button 
-                    variant={isInteractive ? "default" : "outline"} 
-                    className="rounded-full border-primary/20 font-bold"
-                    onClick={() => setIsInteractive(!isInteractive)}
-                    suppressHydrationWarning
-                  >
-                    <Mic className="h-4 w-4 mr-2" />
-                    Interactive
+                  <Button variant="outline" size="sm" className="rounded-full border-primary/20" onClick={toggleListening} suppressHydrationWarning>
+                    {isListening ? <Mic className="h-4 w-4 text-primary animate-pulse" /> : <MicOff className="h-4 w-4" />}
                   </Button>
-                  <Button variant="outline" size="icon" className="rounded-full border-primary/20 bg-white/50" onClick={handleShare} suppressHydrationWarning>
-                    <Share2 className="h-4 w-4 text-primary" />
+                  <Button variant="outline" size="icon" className="rounded-full border-primary/20" onClick={handleShare} suppressHydrationWarning>
+                    <Share2 className="h-4 w-4" />
                   </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="rounded-full border-primary/20 bg-white/50 backdrop-blur-sm hover:bg-white text-primary font-bold shadow-sm" suppressHydrationWarning>
-                        <Calendar className="h-5 w-5 mr-2 text-primary" />
-                        Plan
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="rounded-2xl p-2 border-primary/5 shadow-2xl bg-white">
-                      {DAYS.map((day) => (
-                        <DropdownMenuItem key={day} onClick={() => addToPlanner(day)} className="rounded-xl font-bold text-primary hover:bg-primary/5 cursor-pointer">
-                          {day}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button variant="outline" className="rounded-full border-primary/20 bg-white/50 backdrop-blur-sm hover:bg-white text-primary font-bold shadow-sm" onClick={saveToCollection} suppressHydrationWarning>
-                    <Heart className="h-5 w-5 mr-2 text-primary fill-primary/10" />
-                    Save
+                  <Button variant="default" className="rounded-full bg-primary font-bold" onClick={saveToCollection} suppressHydrationWarning>
+                    <Heart className="h-4 w-4 mr-2" /> Save
                   </Button>
                 </div>
               </div>
               
-              <DialogTitle className="text-5xl font-headline text-primary mb-4 leading-tight">
+              <DialogTitle className="text-4xl md:text-5xl font-headline text-primary mb-4">
                 {recipe.recipeName}
               </DialogTitle>
-              <DialogDescription className="text-xl text-muted-foreground font-medium leading-relaxed max-w-2xl">
+              <DialogDescription className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl">
                 {recipe.description}
               </DialogDescription>
             </div>
 
-            {/* Interactive Step-by-Step UI */}
             {isInteractive ? (
               <div className="flex-1 flex flex-col p-8 md:p-12 space-y-8 animate-fade-in">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-headline font-bold text-primary">Hands-free Cooking Assistant</h3>
-                  <Button 
-                    variant={isListening ? "default" : "outline"} 
-                    onClick={toggleListening}
-                    className="rounded-full animate-pulse"
-                    suppressHydrationWarning
-                  >
-                    {isListening ? <Mic className="h-4 w-4 mr-2" /> : <MicOff className="h-4 w-4 mr-2" />}
-                    {isListening ? "Listening..." : "Start Voice Control"}
-                  </Button>
-                </div>
-
-                <div className="flex-1 bg-primary/5 rounded-[3rem] p-10 flex flex-col items-center justify-center text-center space-y-6 relative border border-primary/10">
-                  <div className="absolute top-8 left-8 text-primary/20 font-black text-6xl">
+                <div className="flex-1 bg-white rounded-[3rem] p-10 flex flex-col items-center justify-center text-center space-y-8 relative border border-primary/5 shadow-xl">
+                  <div className="absolute top-10 left-10 text-primary/10 font-black text-8xl">
                     {currentStepIdx + 1}
                   </div>
                   <p className="text-3xl font-headline text-primary leading-tight max-w-xl">
                     {details.instructions[currentStepIdx]}
                   </p>
-                  <div className="flex gap-4 pt-10">
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
-                      onClick={handlePrevStep} 
-                      disabled={currentStepIdx === 0}
-                      className="rounded-full w-16 h-16 p-0 border-primary/20"
-                      suppressHydrationWarning
-                    >
-                      <ChevronLeft className="h-8 w-8 text-primary" />
+                  <div className="flex gap-6 pt-10">
+                    <Button variant="outline" size="lg" onClick={handlePrevStep} disabled={currentStepIdx === 0} className="rounded-full w-16 h-16 p-0" suppressHydrationWarning>
+                      <ChevronLeft className="h-8 w-8" />
                     </Button>
-                    <Button 
-                      size="lg" 
-                      onClick={handleNextStep} 
-                      disabled={currentStepIdx === details.instructions.length - 1}
-                      className="rounded-full w-16 h-16 p-0 bg-primary"
-                      suppressHydrationWarning
-                    >
-                      <ChevronRight className="h-8 w-8 text-white" />
+                    <Button size="lg" onClick={handleNextStep} disabled={currentStepIdx === details.instructions.length - 1} className="rounded-full w-16 h-16 p-0 bg-primary" suppressHydrationWarning>
+                      <ChevronRight className="h-8 w-8" />
                     </Button>
                   </div>
-                  <p className="text-muted-foreground font-medium text-sm">
-                    Say "Next Step" or click the arrow
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest font-black">
+                    {isListening ? "Listening: 'Next Step' or 'Previous Step'" : "Voice Control Offline"}
                   </p>
                 </div>
               </div>
             ) : (
               <ScrollArea className="flex-1 p-8 md:p-12">
                 <div className="space-y-16">
-                  {/* Nutritional Info */}
+                  {/* Nutrition Summary */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <NutrientCard icon={<Flame className="h-6 w-6" />} label="Calories" value={`${recipe.nutrition.calories} kcal`} />
-                    <NutrientCard icon={<Apple className="h-6 w-6" />} label="Protein" value={recipe.nutrition.protein} />
-                    <NutrientCard icon={<Zap className="h-6 w-6" />} label="Carbs" value={recipe.nutrition.carbs} />
-                    <NutrientCard icon={<Droplets className="h-6 w-6" />} label="Fat" value={recipe.nutrition.fat} />
+                    <StatBox icon={<Flame className="h-5 w-5" />} label="Calories" value={`${recipe.nutrition.calories}`} />
+                    <StatBox icon={<Apple className="h-5 w-5" />} label="Protein" value={recipe.nutrition.protein} />
+                    <StatBox icon={<Zap className="h-5 w-5" />} label="Carbs" value={recipe.nutrition.carbs} />
+                    <StatBox icon={<Droplets className="h-5 w-5" />} label="Fat" value={recipe.nutrition.fat} />
                   </div>
 
-                  <section>
-                    <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-3xl font-headline font-bold text-primary flex items-center gap-4">
-                        <span className="h-1.5 w-12 bg-primary rounded-full" />
-                        Ingredients
-                      </h3>
+                  {/* Flavor Improvements - AI Feature */}
+                  <div className="bg-primary/5 p-8 rounded-[2.5rem] border border-primary/10 space-y-4">
+                     <h3 className="text-xl font-headline font-bold text-primary flex items-center gap-3">
+                        <Wand2 className="h-6 w-6 text-secondary" />
+                        AI Flavor Boosters
+                     </h3>
+                     <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                        To elevate this dish, try adding a pinch of <b>Smoked Paprika</b> for depth, or a splash of <b>Lime juice</b> right before serving to brighten the regional flavors.
+                     </p>
+                  </div>
+
+                  {/* Ingredients Section */}
+                  <section className="space-y-8">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-3xl font-headline font-bold text-primary">Ingredients</h3>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest" onClick={() => handleOrder('Swiggy')}>
-                          Order Swiggy
-                        </Button>
-                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest" onClick={() => handleOrder('Zomato')}>
-                          Order Zomato
-                        </Button>
+                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-[0.2em]" onClick={() => handleOrder('Swiggy')}>Swiggy</Button>
+                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-[0.2em]" onClick={() => handleOrder('Zomato')}>Zomato</Button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {details.ingredients.map((ing, i) => (
-                        <div key={i} className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${ing.isAvailable ? 'bg-primary/[0.02] border-primary/10' : 'bg-muted/30 border-muted-foreground/10 opacity-70'}`}>
-                          <div className="flex items-center gap-4">
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${ing.isAvailable ? 'bg-primary text-white shadow-md' : 'bg-muted text-muted-foreground'}`}>
-                              {ing.isAvailable ? <Check className="h-4 w-4" /> : <Info className="h-4 w-4" />}
+                        <div key={i} className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${ing.isAvailable ? 'bg-primary/5 border-primary/20' : 'bg-white border-primary/5 opacity-60'}`}>
+                          <div className="flex items-center gap-3">
+                            <div className={`h-6 w-6 rounded-full flex items-center justify-center ${ing.isAvailable ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+                              {ing.isAvailable ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
                             </div>
-                            <span className={`text-lg ${ing.isAvailable ? 'font-bold text-primary' : 'font-medium text-muted-foreground'}`}>
-                              {ing.name}
-                            </span>
+                            <span className="font-bold text-primary">{ing.name}</span>
                           </div>
-                          <Badge variant="outline" className="text-sm font-bold border-primary/20 px-3 py-1 bg-white rounded-full text-primary/80">
-                            {ing.quantity}
-                          </Badge>
+                          <span className="text-xs font-black text-muted-foreground uppercase">{ing.quantity}</span>
                         </div>
                       ))}
                     </div>
                   </section>
 
-                  <section>
-                    <h3 className="text-3xl font-headline font-bold text-primary mb-10 flex items-center gap-4">
-                      <span className="h-1.5 w-12 bg-primary rounded-full" />
-                      Preparation Method
-                    </h3>
-                    <div className="space-y-10">
+                  {/* Instructions Section */}
+                  <section className="space-y-10">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-3xl font-headline font-bold text-primary">Method</h3>
+                      <Button variant="ghost" className="text-secondary font-black uppercase tracking-widest text-[10px]" onClick={() => setIsInteractive(true)}>
+                        <CookingPot className="h-4 w-4 mr-2" /> Start Hands-Free
+                      </Button>
+                    </div>
+                    <div className="space-y-12">
                       {details.instructions.map((step, i) => (
                         <div key={i} className="flex gap-8 group">
-                          <div className="flex-shrink-0 relative">
-                            <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-xl shadow-lg">
-                              {i + 1}
-                            </div>
-                            {i < details.instructions.length - 1 && (
-                              <div className="absolute top-14 left-1/2 -translate-x-1/2 w-0.5 h-full bg-primary/10 rounded-full" />
-                            )}
+                          <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center font-black flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                            {i + 1}
                           </div>
-                          <div className="pt-2">
-                            <p className="text-xl text-muted-foreground font-medium leading-relaxed group-hover:text-primary transition-colors">
+                          <div className="pt-1">
+                            <p className="text-lg text-muted-foreground font-medium leading-relaxed group-hover:text-primary transition-colors">
                               {step}
                             </p>
                           </div>
@@ -332,30 +276,26 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                 </div>
               </ScrollArea>
             )}
+            
+            <div className="p-6 bg-white border-t flex justify-center">
+               <Button variant="ghost" onClick={onClose} className="rounded-full font-bold text-muted-foreground">Close Recipe</Button>
+            </div>
           </>
-        ) : (
-          <div className="p-20 text-center space-y-4">
-             <div className="h-12 w-12 bg-destructive/10 text-destructive rounded-full mx-auto flex items-center justify-center">
-                <X className="h-6 w-6" />
-             </div>
-             <p className="text-xl font-bold text-primary">Could not draft details</p>
-             <Button variant="outline" onClick={onClose} className="rounded-full" suppressHydrationWarning>Close</Button>
-          </div>
-        )}
+        ) : null}
       </DialogContent>
     </Dialog>
   );
 }
 
-function NutrientCard({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
+function StatBox({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
   return (
-    <div className="bg-white/60 p-4 rounded-2xl border border-primary/5 shadow-sm flex items-center gap-4">
-      <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+    <div className="bg-white p-4 rounded-2xl border border-primary/5 shadow-sm flex items-center gap-3">
+      <div className="h-10 w-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">{label}</p>
-        <p className="text-lg font-bold text-primary">{value}</p>
+        <p className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">{label}</p>
+        <p className="text-sm font-black text-primary">{value}</p>
       </div>
     </div>
   );
