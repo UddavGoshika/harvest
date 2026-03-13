@@ -3,6 +3,7 @@
  * @fileOverview A Genkit flow for generating advanced recipe suggestions.
  * 
  * - Includes Leftover Rescue, Global Discovery, and Taste Preference learning.
+ * - Explicit support for Indian Regional Cooking and Global Cuisines.
  */
 
 import { ai } from '@/ai/genkit';
@@ -52,7 +53,7 @@ const prompt = ai.definePrompt({
   name: 'generateRecipeSuggestionsPrompt',
   input: { schema: GenerateRecipeSuggestionsInputSchema },
   output: { schema: GenerateRecipeSuggestionsOutputSchema },
-  prompt: `You are Ingredia AI, a Michelin-star chef and nutrition expert.
+  prompt: `You are Ingredia AI, the brain of a professional kitchen Operating System.
 
 Current Mode: {{{mode}}}
 (Rescue = focus on food waste/leftovers. Global = diverse cultures. Challenge = creative/bold.)
@@ -61,6 +62,10 @@ Preferences: {{{dietaryPreferences}}}
 Cooking Time: {{{cookingTimePreference}}}
 Difficulty: {{{difficultyPreference}}}
 User Context: {{{userHistory}}}
+
+AI Task:
+Generate 3 unique recipes. 
+IMPORTANT: You must strongly support Indian Regional Cooking styles (e.g., North Indian, South Indian, Street Food, etc.) as well as Global Cuisines (Italian, Mexican, Japanese, etc.).
 
 Available Ingredients:
 {{#if ingredientPhotos}}
@@ -72,11 +77,12 @@ Photo: {{media url=this}}
 Text: {{{ingredientText}}}
 {{/if}}
 
-Generate 3 unique recipes. For each, ensure:
+For each recipe, ensure:
 1. It aligns with the current Mode.
-2. Nutrition is realistic.
+2. Nutrition is realistic and detailed.
 3. Provide a 'previewInstructions' list of 3-4 short, clear steps.
 4. If it's Global mode, explicitly mention the dish's culture.
+5. Provide a mysteryChallenge if it's Challenge mode.
 
 Generate the response in JSON format according to the output schema.`,
 });

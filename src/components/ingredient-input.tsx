@@ -29,7 +29,6 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
   const [detectedItems, setDetectedItems] = useState<string[]>([]);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -108,14 +107,19 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
     }
   };
 
+  const handleAddDetectedItem = (newItem: string) => {
+    if (!newItem.trim()) return;
+    setDetectedItems(prev => [...new Set([...prev, newItem.trim()])]);
+  };
+
   return (
     <div className="bg-white p-6 md:p-10 rounded-[3rem] shadow-2xl border border-primary/5 space-y-10">
       <Tabs defaultValue="visual" className="w-full">
         <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-10 bg-primary/5 rounded-full p-1 h-14">
-          <TabsTrigger value="visual" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white font-bold transition-all flex items-center gap-2">
+          <TabsTrigger value="visual" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white font-bold transition-all flex items-center gap-2" suppressHydrationWarning>
             <Camera className="h-4 w-4" /> Visual Scanner
           </TabsTrigger>
-          <TabsTrigger value="manual" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white font-bold transition-all flex items-center gap-2">
+          <TabsTrigger value="manual" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-white font-bold transition-all flex items-center gap-2" suppressHydrationWarning>
             <ListChecks className="h-4 w-4" /> Smart List
           </TabsTrigger>
         </TabsList>
@@ -136,6 +140,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
                   size="sm"
                   onClick={() => setIsCameraActive(!isCameraActive)}
                   className="rounded-full px-5 border-primary/20"
+                  suppressHydrationWarning
                 >
                   {isCameraActive ? <X className="h-4 w-4 mr-2" /> : <Camera className="h-4 w-4 mr-2" />}
                   {isCameraActive ? "Stop" : "Live Scan"}
@@ -145,6 +150,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   className="rounded-full px-5 border-primary/20"
+                  suppressHydrationWarning
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Upload
@@ -193,9 +199,39 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
                 </div>
               )}
 
-              {detectedItems.length > 0 && (
-                <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 animate-fade-in">
-                  <h4 className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-4">AI Detected Ingredients</h4>
+              <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 animate-fade-in">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                  <h4 className="text-[10px] font-black text-primary/60 uppercase tracking-widest">
+                    AI Detected Ingredients
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      placeholder="Add more..." 
+                      className="h-8 w-40 text-xs rounded-full border-primary/10 bg-white"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = (e.target as HTMLInputElement).value;
+                          handleAddDetectedItem(val);
+                          (e.target as HTMLInputElement).value = "";
+                        }
+                      }}
+                    />
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8 rounded-full text-primary"
+                      onClick={(e) => {
+                        const input = e.currentTarget.previousElementSibling as HTMLInputElement;
+                        handleAddDetectedItem(input.value);
+                        input.value = "";
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                {detectedItems.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {detectedItems.map((item, i) => (
                       <Badge key={i} className="bg-white text-primary border-primary/10 px-3 py-1.5 rounded-full flex gap-2 items-center group">
@@ -205,24 +241,11 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
                         </button>
                       </Badge>
                     ))}
-                    <div className="flex items-center gap-2">
-                       <Input 
-                        placeholder="Add more..." 
-                        className="h-8 w-32 text-xs rounded-full border-primary/10 bg-white"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            const val = (e.target as HTMLInputElement).value;
-                            if (val) {
-                              setDetectedItems(prev => [...new Set([...prev, val])]);
-                              (e.target as HTMLInputElement).value = "";
-                            }
-                          }
-                        }}
-                       />
-                    </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No ingredients detected yet. Snap a photo or add manually above.</p>
+                )}
+              </div>
             </div>
             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple accept="image/*" />
           </div>
@@ -240,6 +263,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="h-16 rounded-[1.5rem] border-primary/10 bg-primary/5 px-8 text-lg focus-visible:ring-primary shadow-inner"
+                suppressHydrationWarning
               />
             </div>
             
