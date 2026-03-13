@@ -1,53 +1,48 @@
 'use server';
 /**
- * @fileOverview A Genkit flow for generating recipe suggestions based on user-provided ingredients and dietary preferences.
- *
- * - generateRecipeSuggestions - A function that handles the recipe suggestion process.
- * - GenerateRecipeSuggestionsInput - The input type for the generateRecipeSuggestions function.
- * - GenerateRecipeSuggestionsOutput - The return type for the generateRecipeSuggestions function.
+ * @fileOverview A Genkit flow for generating advanced recipe suggestions.
+ * 
+ * - Includes Leftover Rescue, Global Discovery, and Taste Preference learning.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-// Input Schema
 const GenerateRecipeSuggestionsInputSchema = z.object({
-  ingredientPhotos: z.array(
-    z.string().describe(
-      "An array of photos of ingredients, each as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    )
-  ).optional(),
-  ingredientText: z.string().optional().describe('Additional ingredients provided as text, separated by commas.'),
-  dietaryPreferences: z.string().optional().describe('User\'s dietary preferences (e.g., "vegetarian", "gluten-free", "vegan").'),
-  cookingTimePreference: z.string().optional().describe('Preferred cooking time (e.g., "quick", "medium", "long").'),
-  difficultyPreference: z.string().optional().describe('Preferred difficulty level (e.g., "easy", "medium", "hard").'),
+  ingredientPhotos: z.array(z.string()).optional(),
+  ingredientText: z.string().optional(),
+  dietaryPreferences: z.string().optional(),
+  cookingTimePreference: z.string().optional(),
+  difficultyPreference: z.string().optional(),
+  mode: z.enum(['standard', 'rescue', 'global', 'challenge']).default('standard'),
+  userHistory: z.string().optional().describe('Brief history of user preferences for personalization.'),
 });
 export type GenerateRecipeSuggestionsInput = z.infer<typeof GenerateRecipeSuggestionsInputSchema>;
 
-// Output Schema for a single recipe
 const RecipeSuggestionSchema = z.object({
-  recipeName: z.string().describe('The name of the suggested recipe.'),
-  description: z.string().describe('A brief description of the recipe.'),
-  estimatedPrepTime: z.string().describe('Estimated preparation time for the recipe (e.g., "30 minutes", "1 hour").'),
-  difficultyLevel: z.enum(['easy', 'medium', 'hard']).describe('Difficulty level of the recipe.'),
+  recipeName: z.string().describe('Creative name.'),
+  description: z.string().describe('Compelling description.'),
+  estimatedPrepTime: z.string(),
+  difficultyLevel: z.enum(['easy', 'medium', 'hard']),
+  culture: z.string().describe('Cultural origin of the dish.'),
   nutrition: z.object({
-    calories: z.number().describe('Estimated calories per serving.'),
-    protein: z.string().describe('Protein content (e.g., "20g").'),
-    carbs: z.string().describe('Carbs content (e.g., "30g").'),
-    fat: z.string().describe('Fat content (e.g., "10g").'),
-    healthSummary: z.string().describe('A one-sentence summary of the nutritional benefit.'),
-  }).describe('Detailed nutritional breakdown.'),
-  ingredientsUsed: z.array(z.string()).describe('List of ingredients from the user\'s input that are used in this recipe.'),
-  additionalIngredients: z.array(z.string()).describe('List of ingredients required for the recipe that are NOT present in the user\'s input.'),
+    calories: z.number(),
+    protein: z.string(),
+    carbs: z.string(),
+    fat: z.string(),
+    healthSummary: z.string(),
+  }),
+  isRescue: z.boolean().describe('True if this recipe specifically focuses on using up leftovers/expiring items.'),
+  mysteryChallenge: z.string().optional().describe('A small challenge related to this recipe for the mystery ingredient.'),
+  ingredientsUsed: z.array(z.string()),
+  additionalIngredients: z.array(z.string()),
 });
 
-// Output Schema for the array of recipes
 const GenerateRecipeSuggestionsOutputSchema = z.object({
-  recipeSuggestions: z.array(RecipeSuggestionSchema).describe('An array of suggested recipes based on the provided ingredients and preferences.'),
+  recipeSuggestions: z.array(RecipeSuggestionSchema),
 });
 export type GenerateRecipeSuggestionsOutput = z.infer<typeof GenerateRecipeSuggestionsOutputSchema>;
 
-// Wrapper function to call the flow
 export async function generateRecipeSuggestions(input: GenerateRecipeSuggestionsInput): Promise<GenerateRecipeSuggestionsOutput> {
   return generateRecipeSuggestionsFlow(input);
 }
@@ -56,18 +51,15 @@ const prompt = ai.definePrompt({
   name: 'generateRecipeSuggestionsPrompt',
   input: { schema: GenerateRecipeSuggestionsInputSchema },
   output: { schema: GenerateRecipeSuggestionsOutputSchema },
-  prompt: `You are an expert culinary AI and nutritionist. Your task is to generate 3 unique, gourmet recipe suggestions based on available ingredients and user preferences.
+  prompt: `You are Harvest Recipes AI, a Michelin-star chef and nutrition expert.
 
-For each recipe, you MUST provide:
-1. A creative recipe name.
-2. A compelling description.
-3. Realistic estimated prep time and difficulty.
-4. Comprehensive nutritional data including approximate calories, protein, carbs, and fat per serving.
-5. A list of user ingredients used and any extras needed.
+Current Mode: {{{mode}}}
+(Rescue = focus on food waste/leftovers. Global = diverse cultures. Challenge = creative/bold.)
 
-Strictly adhere to dietary preferences: {{{dietaryPreferences}}}.
-Cooking time: {{{cookingTimePreference}}}.
-Difficulty: {{{difficultyPreference}}}.
+Preferences: {{{dietaryPreferences}}}
+Cooking Time: {{{cookingTimePreference}}}
+Difficulty: {{{difficultyPreference}}}
+User Context: {{{userHistory}}}
 
 Available Ingredients:
 {{#if ingredientPhotos}}
@@ -78,6 +70,12 @@ Photo: {{media url=this}}
 {{#if ingredientText}}
 Text: {{{ingredientText}}}
 {{/if}}
+
+Generate 3 unique recipes. For each, ensure:
+1. It aligns with the current Mode.
+2. Nutrition is realistic.
+3. Instructions should be creative but achievable.
+4. If it's Global mode, explicitly mention the dish's culture.
 
 Generate the response in JSON format according to the output schema.`,
 });

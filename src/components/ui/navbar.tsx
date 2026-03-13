@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ChefHat, Calendar, CreditCard } from "lucide-react";
+import { Heart, ChefHat, Calendar, CreditCard, ShoppingBasket, PlayCircle } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -21,17 +21,21 @@ export function Navbar() {
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-secondary/20 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+          <Link href="/reels" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+            <PlayCircle className="h-4 w-4 text-primary" />
+            <span className="hidden md:inline">Reels</span>
+          </Link>
+          <Link href="/pantry" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+            <ShoppingBasket className="h-4 w-4 text-primary" />
+            <span className="hidden md:inline">Fridge</span>
+          </Link>
+          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
             <Calendar className="h-4 w-4 text-primary" />
             <span className="hidden md:inline">Planner</span>
           </Link>
-          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-secondary/20 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
+          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
             <Heart className="h-4 w-4 text-primary fill-primary/10" />
-            <span className="hidden md:inline">My Vault</span>
-          </Link>
-          <Link href="/pricing" className="flex items-center gap-2 text-xs font-bold text-white transition-colors bg-primary px-3 py-2 rounded-full shadow-md hover:bg-primary/90">
-            <CreditCard className="h-4 w-4 text-secondary" />
-            <span className="hidden md:inline">Upgrade</span>
+            <span className="hidden md:inline">Vault</span>
           </Link>
         </div>
       </div>

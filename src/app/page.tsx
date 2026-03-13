@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { IngredientInput } from "@/components/ingredient-input";
 import { generateRecipeSuggestions, GenerateRecipeSuggestionsOutput } from "@/ai/flows/generate-recipe-suggestions";
@@ -8,8 +8,9 @@ import { generatePantrySuggestions, GeneratePantrySuggestionsOutput } from "@/ai
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Sparkles, ChevronRight, Apple, ChefHat, ShoppingBasket, Plus, Flame, Info } from "lucide-react";
+import { Clock, Sparkles, ChevronRight, Apple, ChefHat, ShoppingBasket, Plus, Flame, Info, RotateCcw, Globe, Trophy, PlayCircle } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
+import Link from "next/link";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,7 @@ export default function Home() {
   const [pantrySuggestions, setPantrySuggestions] = useState<GeneratePantrySuggestionsOutput | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
   const [currentInput, setCurrentInput] = useState<{ photos: string[], text: string }>({ photos: [], text: "" });
+  const [activeMode, setActiveMode] = useState<'standard' | 'rescue' | 'global' | 'challenge'>('standard');
 
   const handleGenerate = async (data: { photos: string[], text: string }) => {
     setIsLoading(true);
@@ -26,6 +28,7 @@ export default function Home() {
         generateRecipeSuggestions({
           ingredientPhotos: data.photos,
           ingredientText: data.text,
+          mode: activeMode,
         }),
         generatePantrySuggestions({
           currentIngredients: data.text || "Fresh produce",
@@ -55,28 +58,66 @@ export default function Home() {
           <section className="text-center space-y-8 animate-fade-in pt-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-xs tracking-widest uppercase">
               <Sparkles className="h-4 w-4" />
-              Harvest Recipes AI
+              Intelligence in every bite
             </div>
             <h1 className="text-6xl md:text-8xl font-headline font-black text-primary tracking-tighter leading-[0.9]">
-              Cook <span className="text-accent italic">Naturally.</span>
+              Elevate Your <span className="text-primary italic">Kitchen.</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-              Turn your ingredients into curated culinary experiences with intelligent nutritional insights.
+              Multimodal AI to rescue leftovers, discover global flavors, and cook smarter.
             </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <ModeButton 
+                active={activeMode === 'standard'} 
+                onClick={() => setActiveMode('standard')}
+                icon={<ChefHat className="h-4 w-4" />}
+                label="Standard"
+              />
+              <ModeButton 
+                active={activeMode === 'rescue'} 
+                onClick={() => setActiveMode('rescue')}
+                icon={<RotateCcw className="h-4 w-4" />}
+                label="Leftover Rescue"
+              />
+              <ModeButton 
+                active={activeMode === 'global'} 
+                onClick={() => setActiveMode('global')}
+                icon={<Globe className="h-4 w-4" />}
+                label="Global Discovery"
+              />
+              <ModeButton 
+                active={activeMode === 'challenge'} 
+                onClick={() => setActiveMode('challenge')}
+                icon={<Trophy className="h-4 w-4" />}
+                label="Mystery Challenge"
+              />
+            </div>
           </section>
 
           <section className="animate-slide-up max-w-4xl mx-auto">
             <IngredientInput onGenerate={handleGenerate} isLoading={isLoading} />
           </section>
 
+          <div className="flex justify-center">
+            <Link href="/reels">
+              <Button variant="outline" className="rounded-full border-primary/20 text-primary font-bold px-8 h-12">
+                <PlayCircle className="mr-2 h-5 w-5 text-primary" />
+                Browse Social Reels
+              </Button>
+            </Link>
+          </div>
+
           {(suggestions || isLoading) && (
             <section id="results" className="space-y-16 py-12">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8 border-primary/5">
                 <div className="space-y-2">
                   <h2 className="text-5xl font-headline font-bold text-primary flex items-center gap-3">
-                    Your Curated Menu
+                    Curated For You
                   </h2>
-                  <p className="text-lg text-muted-foreground font-medium">Seasonal suggestions based on your available items.</p>
+                  <p className="text-lg text-muted-foreground font-medium">
+                    {activeMode === 'rescue' ? 'Transforming leftovers into gourmet meals.' : 'Smart suggestions based on your pantry.'}
+                  </p>
                 </div>
               </div>
 
@@ -102,13 +143,18 @@ export default function Home() {
                           alt={recipe.recipeName}
                           className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-110"
                         />
-                        <div className="absolute top-4 left-4">
+                        <div className="absolute top-4 left-4 flex gap-2">
                            <Badge className="bg-white/95 text-primary border-none shadow-md backdrop-blur-md px-4 py-1.5 font-bold uppercase text-[10px]">
                              {recipe.difficultyLevel}
                            </Badge>
+                           {recipe.culture && (
+                             <Badge className="bg-primary text-white border-none shadow-md px-4 py-1.5 font-bold uppercase text-[10px]">
+                               {recipe.culture}
+                             </Badge>
+                           )}
                         </div>
                         <div className="absolute bottom-4 left-4 flex gap-2">
-                           <Badge className="bg-accent/90 text-white border-none font-bold text-[10px] shadow-lg">
+                           <Badge className="bg-primary/90 text-white border-none font-bold text-[10px] shadow-lg">
                              {recipe.nutrition.calories} kcal
                            </Badge>
                         </div>
@@ -124,11 +170,11 @@ export default function Home() {
                       <CardContent className="px-2 flex-1">
                         <div className="flex items-center gap-4 pt-4 border-t border-primary/5">
                           <div className="flex items-center gap-2 text-[10px] font-bold text-primary/40 uppercase tracking-widest">
-                            <Clock className="h-3 w-3 text-accent" />
+                            <Clock className="h-3 w-3 text-primary" />
                             {recipe.estimatedPrepTime}
                           </div>
                           <div className="flex items-center gap-2 text-[10px] font-bold text-primary/40 uppercase tracking-widest">
-                            <Apple className="h-3 w-3 text-accent" />
+                            <Apple className="h-3 w-3 text-primary" />
                             {recipe.nutrition.protein} Protein
                           </div>
                         </div>
@@ -147,34 +193,6 @@ export default function Home() {
                   ))}
                 </div>
               )}
-
-              {pantrySuggestions && (
-                <div className="pt-20 space-y-8 animate-fade-in">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-secondary flex items-center justify-center text-primary shadow-sm">
-                      <ShoppingBasket className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-3xl font-headline font-bold text-primary">Enhance Your Pantry</h3>
-                      <p className="text-muted-foreground font-medium">Recommended pairings for your current kitchen stock.</p>
-                    </div>
-                  </div>
-                  <div className="grid gap-6 md:grid-cols-4">
-                    {pantrySuggestions.suggestions.map((item, idx) => (
-                      <div key={idx} className="bg-white p-6 rounded-[2rem] border border-primary/5 shadow-sm hover:shadow-md transition-all group">
-                        <div className="flex justify-between items-start mb-4">
-                          <Badge variant="outline" className="text-[10px] font-bold border-primary/10 text-primary/60 uppercase">
-                            {item.category}
-                          </Badge>
-                          <Plus className="h-4 w-4 text-accent group-hover:rotate-90 transition-transform" />
-                        </div>
-                        <h4 className="text-xl font-headline font-bold text-primary mb-2">{item.ingredient}</h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{item.reason}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </section>
           )}
 
@@ -184,22 +202,22 @@ export default function Home() {
                 <div className="h-16 w-16 bg-secondary rounded-2xl flex items-center justify-center text-primary">
                   <ChefHat className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Chef Intelligence</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Our AI uses professional culinary logic to ensure every pairing is scientifically sound.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Interactive Assistant</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Cook hands-free with voice commands. Just say "Next Step" to keep moving.</p>
               </div>
               <div className="space-y-6">
                 <div className="h-16 w-16 bg-secondary rounded-2xl flex items-center justify-center text-primary">
-                  <Apple className="h-8 w-8" />
+                  <RotateCcw className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Whole Nutrition</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Detailed caloric and macronutrient breakdowns to keep your health goals on track.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Waste Reduction</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Our rescue engine identifies items nearing expiry and suggests delicious ways to use them.</p>
               </div>
               <div className="space-y-6">
                 <div className="h-16 w-16 bg-secondary rounded-2xl flex items-center justify-center text-primary">
-                  <Flame className="h-8 w-8" />
+                  <PlayCircle className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-primary">Visual Search</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">Simply snap a photo of your fridge, and let Harvest AI handle the rest.</p>
+                <h3 className="text-2xl font-headline font-bold text-primary">Social Cooking</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">Join a community of food lovers. Share your creations and discover trending reels.</p>
               </div>
             </section>
           )}
@@ -209,17 +227,10 @@ export default function Home() {
       <footer className="bg-primary py-24 mt-20 text-white rounded-t-[3rem]">
         <div className="container mx-auto px-4 text-center space-y-12">
           <div className="flex flex-col items-center gap-4">
-            <ChefHat className="h-12 w-12 text-accent" />
+            <ChefHat className="h-12 w-12 text-secondary" />
             <span className="text-4xl font-headline font-black tracking-tighter">HARVEST AI</span>
           </div>
-          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Elevating everyday home cooking with artificial culinary intelligence.</p>
-          <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] text-white/40 font-bold uppercase tracking-widest">
-            <p>© 2024 HARVEST CULINARY SYSTEMS.</p>
-            <div className="flex gap-10">
-              <a href="#" className="hover:text-white transition-colors">Mobile App</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            </div>
-          </div>
+          <p className="text-xl text-white/60 max-w-xl mx-auto font-medium">Sustainable cooking powered by intelligent culinary insights.</p>
         </div>
       </footer>
 
@@ -231,5 +242,19 @@ export default function Home() {
         />
       )}
     </div>
+  );
+}
+
+function ModeButton({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) {
+  return (
+    <Button 
+      variant={active ? "default" : "outline"}
+      onClick={onClick}
+      className={`rounded-full px-6 h-10 font-bold transition-all ${active ? 'bg-primary text-white shadow-lg' : 'border-primary/20 text-primary hover:bg-primary/5'}`}
+      suppressHydrationWarning
+    >
+      <span className="mr-2">{icon}</span>
+      {label}
+    </Button>
   );
 }

@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* Background: A very faint tint of the light green for better readability */
     --background: 136 37% 98%;
     --foreground: 132 45% 10%;
     
@@ -14,26 +13,26 @@
     --popover: 0 0% 100%;
     --popover-foreground: 132 45% 10%;
     
-    /* Primary: Dark Green #266533 (HSL: 132 45% 27%) */
+    /* Primary: Dark Green #266533 */
     --primary: 132 45% 27%;
     --primary-foreground: 136 37% 98%;
     
-    /* Secondary: Light Green #bee0c7 (HSL: 136 37% 81%) */
+    /* Secondary: Light Green #bee0c7 */
     --secondary: 136 37% 81%;
     --secondary-foreground: 132 45% 27%;
     
     --muted: 136 30% 92%;
     --muted-foreground: 132 20% 40%;
     
-    /* Accent: Using the Dark Green for strong UI elements */
+    /* Accent: Dark Green */
     --accent: 132 45% 27%;
     --accent-foreground: 136 37% 98%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 136 30% 85%;
-    --input: 136 30% 85%;
+    --border: 132 45% 27% / 0.1;
+    --input: 132 45% 27% / 0.1;
     --ring: 132 45% 27%;
     
     --radius: 1.5rem;
@@ -68,10 +67,4 @@
 @keyframes slideUp {
   from { transform: translateY(40px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
-}
-
-@media (max-width: 768px) {
-  .container {
-    @apply px-6;
-  }
 }
