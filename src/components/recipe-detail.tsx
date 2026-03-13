@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft } from "lucide-react";
+import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft, Share2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -125,6 +125,24 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
     toast({ title: "Added to Planner", description: `${recipe.recipeName} added to ${day}.` });
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: recipe.recipeName,
+        text: `Check out this recipe I generated on Ingredia: ${recipe.recipeName}`,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      toast({ title: "Sharing not supported", description: "Your browser doesn't support direct sharing." });
+    }
+  };
+
+  const handleOrder = (app: 'Swiggy' | 'Zomato') => {
+    toast({ title: `Opening ${app}`, description: `Redirecting to ${app} to order missing ingredients.` });
+    // In a real app, this would use a deep link or API
+    window.open(`https://www.${app.toLowerCase()}.com`, '_blank');
+  };
+
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[95vh] p-0 overflow-hidden flex flex-col bg-white border-none rounded-[2.5rem] shadow-2xl">
@@ -157,7 +175,10 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                     suppressHydrationWarning
                   >
                     <Mic className="h-4 w-4 mr-2" />
-                    Interactive Mode
+                    Interactive
+                  </Button>
+                  <Button variant="outline" size="icon" className="rounded-full border-primary/20 bg-white/50" onClick={handleShare} suppressHydrationWarning>
+                    <Share2 className="h-4 w-4 text-primary" />
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -250,10 +271,20 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                   </div>
 
                   <section>
-                    <h3 className="text-3xl font-headline font-bold text-primary mb-8 flex items-center gap-4">
-                      <span className="h-1.5 w-12 bg-primary rounded-full" />
-                      Ingredients
-                    </h3>
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-3xl font-headline font-bold text-primary flex items-center gap-4">
+                        <span className="h-1.5 w-12 bg-primary rounded-full" />
+                        Ingredients
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest" onClick={() => handleOrder('Swiggy')}>
+                          Order Swiggy
+                        </Button>
+                        <Button variant="outline" size="sm" className="rounded-full text-[10px] font-black uppercase tracking-widest" onClick={() => handleOrder('Zomato')}>
+                          Order Zomato
+                        </Button>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {details.ingredients.map((ing, i) => (
                         <div key={i} className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${ing.isAvailable ? 'bg-primary/[0.02] border-primary/10' : 'bg-muted/30 border-muted-foreground/10 opacity-70'}`}>

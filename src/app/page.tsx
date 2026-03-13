@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Clock, Sparkles, ChevronRight, Apple, ChefHat, ShoppingBasket, Plus, 
   Flame, Info, RotateCcw, Globe, Trophy, PlayCircle, Camera, CheckCircle2, 
-  ArrowRight, ShieldCheck, Heart, Star, BookOpen, Utensils
+  ArrowRight, ShieldCheck, Heart, Star, BookOpen, Utensils, Zap
 } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import Link from "next/link";
@@ -78,12 +78,13 @@ export default function Home() {
               <Sparkles className="h-4 w-4" />
               Ingredia AI - Culinary Intelligence
             </div>
-            <h1 className="text-5xl md:text-7xl font-headline font-black text-primary tracking-tight leading-[1.1]">
-              Turn Ingredients Into <br />
-              <span className="text-secondary italic">Recipes Instantly.</span>
+            <h1 className="text-5xl md:text-7xl font-headline font-black tracking-tight leading-[1.1]">
+              <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+                Delicious Recipes Instantly.
+              </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-              Scan your fridge or upload ingredients and get personalized AI recipes in seconds. Reduce waste and discover new flavors.
+              Upload ingredients → Get AI recipes. Scan your fridge or upload photos and get personalized culinary inspiration in seconds.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 pt-4">
@@ -120,7 +121,7 @@ export default function Home() {
             <div className="flex flex-wrap justify-center items-center gap-8 mt-10 text-muted-foreground/60">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ShieldCheck className="h-5 w-5 text-secondary" />
-                Smart detection
+                Fridge Scan detection
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <CheckCircle2 className="h-5 w-5 text-secondary" />
@@ -133,18 +134,59 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Food Waste Feature Highlight */}
+          <section className="bg-primary/5 rounded-[4rem] p-12 md:p-20 overflow-hidden relative">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8 relative z-10">
+                <Badge className="bg-secondary text-primary font-black px-6 py-2 rounded-full uppercase tracking-widest text-[10px]">
+                  Sustainability First
+                </Badge>
+                <h2 className="text-4xl md:text-5xl font-headline font-black text-primary leading-tight">
+                  Stop Wasting, <br />
+                  <span className="text-secondary italic">Start Creating.</span>
+                </h2>
+                <p className="text-lg text-muted-foreground font-medium leading-relaxed">
+                  Our Leftover Rescue mode uses advanced multimodal AI to identify ingredients nearing their expiry and crafts Michelin-star recipes to ensure nothing goes to waste.
+                </p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <h4 className="text-3xl font-black text-primary">30%</h4>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Less Food Waste</p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-3xl font-black text-primary">500+</h4>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Rescue Recipes</p>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group">
+                <img 
+                  src="https://picsum.photos/seed/waste-reduction/800/600" 
+                  alt="Food waste reduction" 
+                  className="rounded-[3rem] shadow-2xl transition-transform duration-700 group-hover:scale-105"
+                  data-ai-hint="fresh vegetables kitchen"
+                />
+                <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-[2rem] shadow-xl border border-primary/5 flex items-center gap-4 animate-bounce">
+                  <RotateCcw className="h-8 w-8 text-secondary" />
+                  <p className="text-xs font-black text-primary uppercase leading-tight">Saved 2kg of <br/>produce today</p>
+                </div>
+              </div>
+            </div>
+            <div className="absolute -top-24 -left-24 h-64 w-64 bg-secondary/10 rounded-full blur-3xl" />
+          </section>
+
           {/* How It Works Section */}
           {!suggestions && !isLoading && (
             <section className="space-y-16 py-12">
               <div className="text-center space-y-4">
                 <h2 className="text-4xl font-headline font-bold">How It Works</h2>
-                <p className="text-muted-foreground font-medium">Simple steps to culinary perfection with Ingredia.</p>
+                <p className="text-muted-foreground font-medium">Upload ingredients → Get AI recipes in 3 simple steps.</p>
               </div>
               <div className="grid md:grid-cols-3 gap-12">
                 <StepCard 
                   num="01" 
-                  title="Scan or Upload" 
-                  desc="Take a photo of your fridge or manually enter what you have in stock."
+                  title="Upload or Scan" 
+                  desc="Take a photo of your fridge or upload photos of your ingredients."
                   icon={<Camera className="h-6 w-6" />}
                 />
                 <StepCard 
@@ -155,8 +197,8 @@ export default function Home() {
                 />
                 <StepCard 
                   num="03" 
-                  title="Cook & Enjoy" 
-                  desc="Get step-by-step instructions and nutritional insights for every meal."
+                  title="Get Recipes" 
+                  desc="Receive personalized, delicious recipes with full nutritional insights."
                   icon={<ChefHat className="h-6 w-6" />}
                 />
               </div>
@@ -196,10 +238,10 @@ export default function Home() {
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
-                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-food/800/500`} 
+                            src={`https://picsum.photos/seed/${recipe.recipeName.replace(/\s+/g, '')}-gourmet/800/500`} 
                             alt={recipe.recipeName}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                            data-ai-hint="gourmet food dish"
+                            data-ai-hint="delicious food"
                           />
                           <div className="absolute top-6 left-6 flex gap-2">
                              <Badge className="bg-white/95 text-primary border-none shadow-sm backdrop-blur-md px-4 py-1.5 font-black uppercase text-[10px] rounded-full">
@@ -312,14 +354,14 @@ export default function Home() {
             </section>
           )}
 
-          {/* Social / Feature Highlights */}
+          {/* Feature Highlights Section */}
           {!suggestions && !isLoading && (
             <section className="space-y-24">
               <div className="grid md:grid-cols-2 gap-16 items-center">
                  <div className="space-y-8">
                     <h2 className="text-4xl md:text-5xl font-headline font-black leading-tight">
-                      Gourmet Cooking, <br />
-                      <span className="text-secondary italic">Zero Waste.</span>
+                      Sustainable Cooking, <br />
+                      <span className="text-secondary italic">Powered by AI.</span>
                     </h2>
                     <div className="space-y-6">
                        <FeatureLine 
@@ -333,9 +375,14 @@ export default function Home() {
                         text="Point your camera and let AI build your inventory automatically." 
                        />
                        <FeatureLine 
-                        icon={<PlayCircle className="h-6 w-6 text-secondary" />} 
-                        title="Social Discovery" 
-                        text="Watch 30-second reels of others cooking these exact AI recipes." 
+                        icon={<Zap className="h-6 w-6 text-secondary" />} 
+                        title="Expiring Food Alerts" 
+                        text="Get notified when items in your fridge are about to go bad." 
+                       />
+                       <FeatureLine 
+                        icon={<Trophy className="h-6 w-6 text-secondary" />} 
+                        title="Daily Cooking Challenges" 
+                        text="Participate in community mystery ingredient challenges." 
                        />
                     </div>
                  </div>
@@ -343,8 +390,8 @@ export default function Home() {
                     <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 rounded-[3rem] p-8 overflow-hidden">
                        <div className="bg-white rounded-[2rem] p-6 shadow-2xl space-y-4 animate-slide-up">
                           <div className="flex items-center gap-3">
-                             <Badge className="bg-secondary/20 text-primary border-none font-bold text-[10px]">PREVIEW</Badge>
-                             <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Mystery Challenge</span>
+                             <Badge className="bg-secondary/20 text-primary border-none font-bold text-[10px]">MYSTERY</Badge>
+                             <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Daily Challenge</span>
                           </div>
                           <h4 className="text-2xl font-headline font-bold">The Zucchini Mystery</h4>
                           <p className="text-muted-foreground text-sm leading-relaxed">Can you create a dessert using only zucchini, honey, and oats?</p>

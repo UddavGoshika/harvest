@@ -114,8 +114,14 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
 
   const addSuggestion = (item: string) => {
     const parts = text.split(',');
-    parts[parts.length - 1] = ` ${item}`;
-    setText(parts.join(',').trim() + ", ");
+    // If it's the last part and it's partially typed, replace it
+    if (parts.length > 0) {
+      parts[parts.length - 1] = ` ${item}`;
+    } else {
+      parts.push(item);
+    }
+    const newText = parts.join(',').trim() + ", ";
+    setText(newText);
     setSuggestions([]);
   };
 
@@ -225,19 +231,20 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
               <Search className="absolute right-6 top-5 h-6 w-6 text-primary/20" />
             </div>
             
-            {suggestions.length > 0 && (
-              <div className="bg-white border border-primary/5 shadow-xl rounded-3xl p-4 flex flex-wrap gap-2 animate-in fade-in zoom-in duration-200">
-                {suggestions.map((item) => (
+            <div className="space-y-4">
+              <p className="text-[10px] font-black text-primary/40 uppercase tracking-widest px-1">Common Ingredients (Tap to add)</p>
+              <div className="flex flex-wrap gap-2">
+                {(suggestions.length > 0 ? suggestions : COMMON_INGREDIENTS.slice(0, 12)).map((item) => (
                   <button
                     key={item}
                     onClick={() => addSuggestion(item)}
-                    className="px-5 py-2.5 rounded-full bg-secondary/10 text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all shadow-sm"
+                    className="px-4 py-2 rounded-full bg-secondary/10 text-primary font-bold text-xs hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/5"
                   >
                     + {item}
                   </button>
                 ))}
               </div>
-            )}
+            </div>
           </div>
         </TabsContent>
       </Tabs>
