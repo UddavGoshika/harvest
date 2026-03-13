@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 120 15% 98%;
+    --background: 120 20% 98%;
     --foreground: 150 40% 5%;
     --card: 0 0% 100%;
     --card-foreground: 150 40% 5%;
     --popover: 0 0% 100%;
     --popover-foreground: 150 40% 5%;
-    --primary: 150 45% 18%; /* Deep Forest Green */
+    --primary: 155 50% 15%; /* Deep Forest Green */
     --primary-foreground: 120 15% 98%;
-    --secondary: 140 20% 92%;
-    --secondary-foreground: 150 45% 18%;
-    --muted: 140 10% 94%;
-    --muted-foreground: 150 10% 40%;
-    --accent: 35 85% 45%; /* Warm Harvest Orange */
+    --secondary: 145 30% 94%; /* Pale Sage */
+    --secondary-foreground: 155 50% 15%;
+    --muted: 145 15% 94%;
+    --muted-foreground: 155 10% 40%;
+    --accent: 142 70% 45%; /* Vibrant Emerald Green (Replacing Orange) */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 140 15% 90%;
-    --input: 140 15% 90%;
-    --ring: 150 45% 18%;
+    --border: 145 20% 90%;
+    --input: 145 20% 90%;
+    --ring: 155 50% 15%;
     --radius: 1.5rem;
   }
 }

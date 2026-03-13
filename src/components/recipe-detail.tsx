@@ -11,9 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets } from "lucide-react";
+import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 interface RecipeDetailProps {
   recipe: any;
@@ -61,6 +69,17 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
     });
   };
 
+  const addToPlanner = (day: string) => {
+    const planner = JSON.parse(localStorage.getItem("harvest_meal_planner") || "{}");
+    if (!planner[day]) planner[day] = [];
+    planner[day].push({ ...recipe, details });
+    localStorage.setItem("harvest_meal_planner", JSON.stringify(planner));
+    toast({
+      title: "Added to Planner",
+      description: `${recipe.recipeName} added to ${day}.`,
+    });
+  };
+
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[95vh] p-0 overflow-hidden flex flex-col bg-white border-none rounded-[2.5rem] shadow-2xl">
@@ -87,10 +106,27 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                     {details.estimatedPrepTime}
                   </Badge>
                 </div>
-                <Button variant="outline" className="rounded-full border-primary/20 bg-white/50 backdrop-blur-sm hover:bg-white text-primary font-bold shadow-sm" onClick={saveToCollection} suppressHydrationWarning>
-                  <Heart className="h-5 w-5 mr-2 text-destructive fill-destructive/10" />
-                  Save Recipe
-                </Button>
+                <div className="flex gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="rounded-full border-primary/20 bg-white/50 backdrop-blur-sm hover:bg-white text-primary font-bold shadow-sm" suppressHydrationWarning>
+                        <Calendar className="h-5 w-5 mr-2 text-accent" />
+                        Plan Meal
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="rounded-2xl p-2 border-primary/5 shadow-2xl bg-white">
+                      {DAYS.map((day) => (
+                        <DropdownMenuItem key={day} onClick={() => addToPlanner(day)} className="rounded-xl font-bold text-primary hover:bg-primary/5 cursor-pointer">
+                          {day}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button variant="outline" className="rounded-full border-primary/20 bg-white/50 backdrop-blur-sm hover:bg-white text-primary font-bold shadow-sm" onClick={saveToCollection} suppressHydrationWarning>
+                    <Heart className="h-5 w-5 mr-2 text-accent fill-accent/10" />
+                    Save Recipe
+                  </Button>
+                </div>
               </div>
               
               <DialogTitle className="text-5xl font-headline text-primary mb-4 leading-tight">
