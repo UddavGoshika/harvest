@@ -21,12 +21,17 @@ const REELS_MOCK = [
   { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", seed: "302", hint: "spinach dish" },
   { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", seed: "303", hint: "thai curry" },
   { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", seed: "304", hint: "roasted carrots" },
+  { id: 5, author: "@mumbai_street", title: "Pav Bhaji Masterclass", likes: "42k", tag: "Indian", seed: "305", hint: "pav bhaji" },
+  { id: 6, author: "@sushi_guru", title: "Perfect Sushi Roll at Home", likes: "15k", tag: "Japanese", seed: "306", hint: "sushi platter" },
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "305", hint: "pesto pasta" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "306", hint: "tofu stirfry" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "307", hint: "mediterranean salad" },
+  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", seed: "307", hint: "pesto pasta" },
+  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", seed: "308", hint: "tofu stirfry" },
+  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", seed: "309", hint: "mediterranean salad" },
+  { name: "Butter Chicken Masala", time: "45 min", cal: 580, difficulty: "Medium", seed: "310", hint: "butter chicken" },
+  { name: "Avocado Toast Bliss", time: "5 min", cal: 210, difficulty: "Easy", seed: "311", hint: "avocado toast" },
+  { name: "Classic French Onion Soup", time: "60 min", cal: 340, difficulty: "Hard", seed: "312", hint: "onion soup" },
 ];
 
 export default function Home() {
@@ -66,8 +71,8 @@ export default function Home() {
   };
 
   const relatedReels = useMemo(() => {
-    if (!suggestions) return REELS_MOCK.slice(0, 2);
-    return REELS_MOCK.sort(() => 0.5 - Math.random()).slice(0, 4);
+    if (!suggestions) return REELS_MOCK.slice(0, 4);
+    return REELS_MOCK.sort(() => 0.5 - Math.random()).slice(0, 6);
   }, [suggestions]);
 
   return (
@@ -85,8 +90,7 @@ export default function Home() {
             </div>
             <h1 className="text-5xl md:text-7xl font-headline font-black tracking-tight leading-[1.1]">
               <span className="bg-gradient-to-r from-[#2E7D32] via-[#66BB6A] to-[#2E7D32] bg-clip-text text-transparent">
-               Delicious Recipes <br/>Instantly Generated.
-              </span>
+              Delicious Recipes Instantly              </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
               Upload ingredients → Get AI recipes. The sustainable brain for your kitchen that tracks freshness and designs gourmet meals.
@@ -242,9 +246,9 @@ export default function Home() {
                          <Button variant="link" className="text-secondary font-bold text-lg" suppressHydrationWarning>See all cooking reels <ChevronRight className="ml-2 h-5 w-5" /></Button>
                        </Link>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                       {relatedReels.map((reel) => (
-                        <div key={reel.id} className="group relative aspect-[9/16] rounded-[3rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all cursor-pointer">
+                        <div key={reel.id} className="group relative aspect-[9/16] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-primary/10 transition-all cursor-pointer">
                           <img 
                             src={`https://picsum.photos/seed/${reel.seed}/600/1000`} 
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
@@ -252,17 +256,17 @@ export default function Home() {
                             data-ai-hint={reel.hint}
                           />
                           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                          <div className="absolute top-6 left-6">
-                            <Badge className="bg-white/90 text-primary border-none text-[9px] rounded-full uppercase font-black px-4 py-1">
+                          <div className="absolute top-4 left-4">
+                            <Badge className="bg-white/90 text-primary border-none text-[8px] rounded-full uppercase font-black px-3 py-1">
                               {reel.tag}
                             </Badge>
                           </div>
-                          <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                             <p className="font-black text-sm drop-shadow-md leading-tight">{reel.title}</p>
-                             <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">{reel.author}</p>
+                          <div className="absolute bottom-4 left-4 right-4 text-white space-y-1">
+                             <p className="font-black text-xs drop-shadow-md leading-tight">{reel.title}</p>
+                             <p className="text-[8px] font-bold opacity-80 uppercase tracking-widest">{reel.author}</p>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <PlayCircle className="h-16 w-16 text-white/50" />
+                            <PlayCircle className="h-12 w-12 text-white/70" />
                           </div>
                         </div>
                       ))}
@@ -280,10 +284,13 @@ export default function Home() {
                   <h2 className="text-4xl font-headline font-bold">Trending Creations</h2>
                   <p className="text-muted-foreground font-medium">Most popular blueprints in the Ingredia community.</p>
                 </div>
+                <Link href="/recipes">
+                  <Button variant="outline" className="rounded-full border-primary/20 text-primary font-bold">Explore Gallery</Button>
+                </Link>
              </div>
-             <div className="grid md:grid-cols-3 gap-8">
+             <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
                {TRENDING_RECIPES.map((recipe, idx) => (
-                 <Card key={idx} className="rounded-[2.5rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer">
+                 <Card key={idx} className="rounded-[2rem] overflow-hidden border-none shadow-lg group hover:shadow-xl transition-all cursor-pointer">
                    <div className="aspect-[16/10] overflow-hidden relative">
                       <img 
                         src={`https://picsum.photos/seed/${recipe.seed}/600/400`} 
@@ -291,19 +298,45 @@ export default function Home() {
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform"
                         data-ai-hint={recipe.hint}
                       />
-                      <div className="absolute top-4 left-4">
-                         <Badge className="bg-white/90 text-primary border-none text-[10px] font-black">{recipe.difficulty}</Badge>
+                      <div className="absolute top-2 left-2">
+                         <Badge className="bg-white/90 text-primary border-none text-[8px] font-black">{recipe.difficulty}</Badge>
                       </div>
                    </div>
-                   <CardHeader className="p-6">
-                      <CardTitle className="text-xl font-headline font-bold">{recipe.name}</CardTitle>
-                      <div className="flex items-center gap-4 text-[10px] font-black uppercase text-muted-foreground mt-2">
-                         <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {recipe.time}</span>
-                         <span className="flex items-center gap-1"><Flame className="h-3 w-3" /> {recipe.cal} Cal</span>
+                   <CardHeader className="p-4">
+                      <CardTitle className="text-sm font-headline font-bold leading-tight group-hover:text-primary transition-colors">{recipe.name}</CardTitle>
+                      <div className="flex items-center gap-2 text-[8px] font-black uppercase text-muted-foreground mt-2">
+                         <span className="flex items-center gap-1"><Clock className="h-2 w-2" /> {recipe.time}</span>
+                         <span className="flex items-center gap-1 text-secondary"><Flame className="h-2 w-2" /> {recipe.cal} Cal</span>
                       </div>
                    </CardHeader>
                  </Card>
                ))}
+             </div>
+          </section>
+
+          {/* SaaS Trust Section */}
+          <section className="bg-primary/5 rounded-[4rem] p-12 md:p-20 text-center space-y-12">
+             <div className="space-y-4">
+                <h3 className="text-3xl md:text-5xl font-headline font-black text-primary">Trusted by 200,000+ Kitchens</h3>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">Providing intelligent kitchen management and sustainable recipe generation since early 2024.</p>
+             </div>
+             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="space-y-2">
+                   <p className="text-4xl font-black text-primary">12M+</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Recipes Generated</p>
+                </div>
+                <div className="space-y-2">
+                   <p className="text-4xl font-black text-primary">500k</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Kgs Food Rescued</p>
+                </div>
+                <div className="space-y-2">
+                   <p className="text-4xl font-black text-primary">4.9/5</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Chef Rating</p>
+                </div>
+                <div className="space-y-2">
+                   <p className="text-4xl font-black text-primary">150+</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Global Cuisines</p>
+                </div>
              </div>
           </section>
         </div>
@@ -320,11 +353,13 @@ export default function Home() {
              <Link href="/" className="hover:text-white transition-colors">Home</Link>
              <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
              <Link href="/recipes" className="hover:text-white transition-colors">Recipes</Link>
+             <Link href="/reels" className="hover:text-white transition-colors">Reels</Link>
              <Link href="/pantry" className="hover:text-white transition-colors">Pantry</Link>
-             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
              <Link href="/planner" className="hover:text-white transition-colors">Meal Planner</Link>
+             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
              <Link href="/collection" className="hover:text-white transition-colors">Vault</Link>
           </div>
+          <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">© 2024 Ingredia Kitchen OS. All rights reserved.</p>
         </div>
       </footer>
 

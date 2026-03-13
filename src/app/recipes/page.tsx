@@ -9,7 +9,7 @@ import { Clock, Flame, ChevronRight, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const CATEGORIES = [
-  "Indian Regional", "Global Fusion", "Quick & Easy", "Leftover Rescue", "Healthy Bites", "Vegetarian"
+  "Indian Regional", "Global Fusion", "Quick & Easy", "Leftover Rescue", "Healthy Bites", "Vegetarian", "Desserts"
 ];
 
 const ALL_RECIPES = [
@@ -19,6 +19,18 @@ const ALL_RECIPES = [
   { name: "Quinoa Veggie Bowl", category: "Healthy Bites", time: "10 min", cal: 290, difficulty: "Easy", seed: "204", hint: "quinoa bowl" },
   { name: "Spinach & Cheese Pasta", category: "Quick & Easy", time: "15 min", cal: 450, difficulty: "Easy", seed: "205", hint: "spinach pasta" },
   { name: "Rescue Veggie Stir-fry", category: "Leftover Rescue", time: "12 min", cal: 210, difficulty: "Easy", seed: "206", hint: "vegetable stirfry" },
+  { name: "Hyderabadi Chicken Biryani", category: "Indian Regional", time: "50 min", cal: 650, difficulty: "Hard", seed: "207", hint: "chicken biryani" },
+  { name: "Classic Italian Margherita", category: "Global Fusion", time: "20 min", cal: 550, difficulty: "Medium", seed: "208", hint: "margherita pizza" },
+  { name: "Japanese Miso Ramen", category: "Global Fusion", time: "35 min", cal: 480, difficulty: "Medium", seed: "209", hint: "miso ramen" },
+  { name: "Mexican Street Tacos", category: "Global Fusion", time: "15 min", cal: 380, difficulty: "Easy", seed: "210", hint: "street tacos" },
+  { name: "Gujarati Dhokla", category: "Indian Regional", time: "25 min", cal: 150, difficulty: "Medium", seed: "211", hint: "khaman dhokla" },
+  { name: "Low-Carb Zucchini Noodles", category: "Healthy Bites", time: "12 min", cal: 120, difficulty: "Easy", seed: "212", hint: "zucchini noodles" },
+  { name: "Kerala Fish Curry", category: "Indian Regional", time: "40 min", cal: 320, difficulty: "Medium", seed: "213", hint: "kerala fish curry" },
+  { name: "American Cheeseburger", category: "Global Fusion", time: "15 min", cal: 720, difficulty: "Easy", seed: "214", hint: "gourmet burger" },
+  { name: "Indian Gajar Ka Halwa", category: "Desserts", time: "45 min", cal: 280, difficulty: "Medium", seed: "215", hint: "carrot halwa" },
+  { name: "Berry Greek Yogurt Parfait", category: "Healthy Bites", time: "5 min", cal: 180, difficulty: "Easy", seed: "216", hint: "yogurt parfait" },
+  { name: "Leftover Rice Fried Rice", category: "Leftover Rescue", time: "10 min", cal: 340, difficulty: "Easy", seed: "217", hint: "egg fried rice" },
+  { name: "Classic French Crepes", category: "Global Fusion", time: "20 min", cal: 240, difficulty: "Medium", seed: "218", hint: "french crepes" },
 ];
 
 export default function RecipesPage() {
@@ -39,7 +51,7 @@ export default function RecipesPage() {
               Culinary <span className="text-secondary italic">Blueprint</span> Gallery
             </h1>
             <p className="text-lg text-muted-foreground font-medium max-w-2xl">
-              Explore our vast library of AI-optimized recipes from across the globe and regional heartlands.
+              Explore our vast library of AI-optimized recipes from across the globe and regional heartlands. Launched over 4 months ago, our gallery features thousands of curated blueprints.
             </p>
           </header>
 

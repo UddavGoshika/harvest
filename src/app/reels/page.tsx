@@ -10,6 +10,11 @@ const REELS = [
   { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", seed: "501", hint: "chef pasta" },
   { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", seed: "502", hint: "spinach cooking" },
   { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", seed: "503", hint: "thai cooking" },
+  { id: 4, author: "@street_foodie", title: "Mumbai Style Pav Bhaji", likes: "18.2k", seed: "504", hint: "mumbai street food" },
+  { id: 5, author: "@dessert_queen", title: "3-Ingredient Chocolate Cake", likes: "45.1k", seed: "505", hint: "chocolate cake" },
+  { id: 6, author: "@vegan_vibes", title: "Creamy Cashew Cheese Sauce", likes: "9.5k", seed: "506", hint: "vegan cheese" },
+  { id: 7, author: "@fitness_kitchen", title: "High Protein Egg White Wrap", likes: "14.3k", seed: "507", hint: "egg wrap" },
+  { id: 8, author: "@spice_master", title: "Secret Garam Masala Blend", likes: "32.8k", seed: "508", hint: "indian spices" },
 ];
 
 export default function ReelsPage() {

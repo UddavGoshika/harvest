@@ -27,10 +27,11 @@ export function Navbar() {
             </span>
           </div>
         </Link>
-        <div className="flex items-center gap-1 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-2 sm:pb-0 no-scrollbar">
           <NavLink href="/" icon={<Home className="h-4 w-4" />} label="Home" />
           <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
           <NavLink href="/recipes" icon={<ChefHat className="h-4 w-4" />} label="Recipes" />
+          <NavLink href="/reels" icon={<PlayCircle className="h-4 w-4" />} label="Reels" />
           <NavLink href="/pantry" icon={<ShoppingBasket className="h-4 w-4" />} label="Pantry" />
           <NavLink href="/planner" icon={<Calendar className="h-4 w-4" />} label="Planner" />
           <NavLink href="/grocery" icon={<ShoppingCart className="h-4 w-4" />} label="Grocery" />
@@ -59,9 +60,9 @@ export function Navbar() {
 
 function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) {
   return (
-    <Link href={href} className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-3 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+    <Link href={href} className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-3 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md flex-shrink-0">
       <span className="text-secondary">{icon}</span>
-      <span className="hidden xl:inline">{label}</span>
+      <span className="hidden lg:inline">{label}</span>
     </Link>
   );
 }
