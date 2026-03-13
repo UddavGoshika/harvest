@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ChefHat, Calendar, CreditCard, ShoppingBasket, PlayCircle } from "lucide-react";
+import { Heart, ChefHat, Calendar, CreditCard, ShoppingBasket, PlayCircle, Sparkles } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -15,26 +15,26 @@ export function Navbar() {
             <span className="text-2xl font-headline font-black text-primary tracking-tighter leading-none uppercase">
               HARVEST
             </span>
-            <span className="text-[10px] font-bold text-primary/60 tracking-[0.2em] uppercase leading-none mt-1">
-              Recipes AI
+            <span className="text-[10px] font-bold text-secondary tracking-[0.2em] uppercase leading-none mt-1">
+              AI ASSISTANT
             </span>
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/reels" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <PlayCircle className="h-4 w-4 text-primary" />
+          <Link href="/reels" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+            <PlayCircle className="h-4 w-4 text-secondary" />
             <span className="hidden md:inline">Reels</span>
           </Link>
-          <Link href="/pantry" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <ShoppingBasket className="h-4 w-4 text-primary" />
+          <Link href="/pantry" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+            <ShoppingBasket className="h-4 w-4 text-secondary" />
             <span className="hidden md:inline">Fridge</span>
           </Link>
-          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <Calendar className="h-4 w-4 text-primary" />
+          <Link href="/planner" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+            <Calendar className="h-4 w-4 text-secondary" />
             <span className="hidden md:inline">Planner</span>
           </Link>
-          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-colors bg-primary/5 px-3 py-2 rounded-full border border-primary/5 shadow-sm">
-            <Heart className="h-4 w-4 text-primary fill-primary/10" />
+          <Link href="/collection" className="flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary transition-all bg-white/50 px-4 py-2.5 rounded-full border border-primary/5 shadow-sm hover:shadow-md">
+            <Heart className="h-4 w-4 text-secondary fill-secondary/10" />
             <span className="hidden md:inline">Vault</span>
           </Link>
         </div>
