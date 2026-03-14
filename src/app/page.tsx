@@ -3,8 +3,8 @@
 import { useState, useMemo } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { IngredientInput } from "@/components/ingredient-input";
-import { generateRecipeSuggestions, GenerateRecipeSuggestionsOutput } from "@/ai/flows/generate-recipe-suggestions";
-import { generatePantrySuggestions, GeneratePantrySuggestionsOutput } from "@/ai/flows/generate-pantry-suggestions";
+import { suggestRecipes, suggestPantryItems } from "@/app/actions/ai";
+import type { RecipeSuggestionsOutput as GenerateRecipeSuggestionsOutput, PantrySuggestionsOutput as GeneratePantrySuggestionsOutput } from "@/types/ai";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,21 +20,112 @@ import { initializeDatabase, SEED_REELS } from "@/lib/seed-data";
 import { useEffect } from "react";
 
 const REELS_MOCK = [
-  { id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800" },
-  { id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", imageUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?q=80&w=800" },
-  { id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", imageUrl: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=800" },
-  { id: 4, author: "@veggie_vibe", title: "The Best Roasted Carrots", likes: "5k", tag: "Healthy", imageUrl: "https://images.unsplash.com/photo-1598170845058-32b996a7aca0?q=80&w=800" },
-  { id: 5, author: "@mumbai_street", title: "Pav Bhaji Masterclass", likes: "42k", tag: "Indian", imageUrl: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=800" },
-  { id: 6, author: "@sushi_guru", title: "Perfect Sushi Roll at Home", likes: "15k", tag: "Japanese", imageUrl: "https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800" },
+  { 
+    id: 1, author: "@chef_sophie", title: "Midnight Pasta Hack", likes: "12.4k", tag: "Pasta", imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800", 
+    details: { 
+      ingredients: [
+        {name: "Spaghetti", quantity: "200g", isAvailable: true}, 
+        {name: "Garlic", quantity: "4 cloves", isAvailable: true}, 
+        {name: "Chili Flakes", quantity: "1 tsp", isAvailable: true},
+        {name: "Parsley", quantity: "1/4 cup", isAvailable: true}
+      ], 
+      instructions: [
+        "Boil a large pot of water with 1 tbsp of salt. Add spaghetti and cook for 8 minutes.",
+        "Thinly slice the garlic into transparent chips.",
+        "In a cold pan, add 3 tbsp of olive oil and the garlic. Turn heat to medium-low.",
+        "Once garlic is golden, add chili flakes and a ladle of pasta water to stop the cooking.",
+        "Drain pasta and toss into the pan. Increase heat to high and stir vigorously.",
+        "Garnish with chopped parsley and a squeeze of lemon."
+      ], 
+      difficultyLevel: "Easy", 
+      estimatedPrepTime: "15 min" 
+    } 
+  },
+  { 
+    id: 2, author: "@healthy_bites", title: "Expiring Spinach? Do this!", likes: "8.1k", tag: "Waste Reduction", imageUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?q=80&w=800", 
+    details: { 
+      ingredients: [
+        {name: "Wilting Spinach", quantity: "2 massive handfuls", isAvailable: true}, 
+        {name: "Green Apple", quantity: "1 unit", isAvailable: true}, 
+        {name: "Coconut Water", quantity: "250ml", isAvailable: true},
+        {name: "Chia Seeds", quantity: "1 tbsp", isAvailable: true}
+      ], 
+      instructions: [
+        "Rinse the spinach thoroughly to remove any grit.",
+        "Core and chop the apple into small chunks (leave skin on for fiber).",
+        "Place spinach at the bottom of the blender, followed by the apple and chia seeds.",
+        "Pour in the cold coconut water.",
+        "Blend on high power for 60 seconds until a vivid green liquid forms.",
+        "Pour into a chilled glass and consume immediately for maximum nutrients."
+      ], 
+      difficultyLevel: "Easy", 
+      estimatedPrepTime: "5 min" 
+    } 
+  },
+  { 
+    id: 3, author: "@global_eats", title: "Real Thai Green Curry", likes: "25k", tag: "Thai", imageUrl: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=800", 
+    details: { 
+      ingredients: [
+        {name: "Green Curry Paste", quantity: "2 tbsp", isAvailable: true}, 
+        {name: "Coconut Milk", quantity: "400ml", isAvailable: true}, 
+        {name: "Tofu or Chicken", quantity: "300g", isAvailable: true},
+        {name: "Thai Basil", quantity: "10 leaves", isAvailable: true}
+      ], 
+      instructions: [
+        "Spoon the thick 'cream' from the top of the coconut milk into a hot wok.",
+        "Fry the curry paste in the coconut cream until the oil separates and it smells fragrant.",
+        "Add your protein and sear until the edges are coated in the paste.",
+        "Pour in the remaining coconut milk and simmer for 10 minutes.",
+        "Add a dash of fish sauce (or soy) and a pinch of sugar to balance the heat.",
+        "Tear the basil leaves and throw them in just before turning off the heat."
+      ], 
+      difficultyLevel: "Medium", 
+      estimatedPrepTime: "30 min" 
+    } 
+  }
 ];
 
 const TRENDING_RECIPES = [
-  { name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600", hint: "pesto pasta" },
-  { name: "Spicy Tofu Stir-fry", time: "20 min", cal: 320, difficulty: "Medium", imageUrl: "https://images.unsplash.com/photo-1546069901-e5161476b701?q=80&w=600", hint: "tofu stirfry" },
-  { name: "Mediterranean Salad", time: "10 min", cal: 280, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=600", hint: "mediterranean salad" },
-  { name: "Butter Chicken Masala", time: "45 min", cal: 580, difficulty: "Medium", imageUrl: "https://images.unsplash.com/photo-1603894584202-933259aba79e?q=80&w=600", hint: "butter chicken" },
-  { name: "Avocado Toast Bliss", time: "5 min", cal: 210, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=600", hint: "avocado toast" },
-  { name: "Classic French Onion Soup", time: "60 min", cal: 340, difficulty: "Hard", imageUrl: "https://images.unsplash.com/photo-1510627498534-cf7c9002facc?q=80&w=600", hint: "onion soup" },
+  { 
+    name: "Creamy Pesto Pasta", time: "15 min", cal: 450, difficulty: "Easy", imageUrl: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600", 
+    details: { 
+      ingredients: [
+        {name: "Penne Pasta", quantity: "200g", isAvailable: true}, 
+        {name: "Basil Pesto", quantity: "4 tbsp", isAvailable: true},
+        {name: "Heavy Cream", quantity: "50ml", isAvailable: true},
+        {name: "Parmesan", quantity: "30g", isAvailable: true}
+      ], 
+      instructions: [
+        "Boil pasta in salted water until al dente.",
+        "In a pan, gently warm the pesto and heavy cream together on low heat.",
+        "Drain pasta, reserving some water.",
+        "Mix pasta into the pan, adding reserved water to make it extra creamy.",
+        "Serve topped with fresh parmesan shavings."
+      ], 
+      difficultyLevel: "Easy", 
+      estimatedPrepTime: "15 min" 
+    } 
+  },
+  { 
+    name: "Butter Chicken Masala", time: "45 min", cal: 580, difficulty: "Medium", imageUrl: "https://images.unsplash.com/photo-1603894584202-933259aba79e?q=80&w=600", 
+    details: { 
+      ingredients: [
+        {name: "Chicken Thighs", quantity: "500g", isAvailable: true}, 
+        {name: "Tomato Puree", quantity: "1 cup", isAvailable: true},
+        {name: "Butter", quantity: "50g", isAvailable: true},
+        {name: "Garam Masala", quantity: "1 tbsp", isAvailable: true}
+      ], 
+      instructions: [
+        "Marinate chicken in yogurt and spices for 20 minutes.",
+        "Pan-fry chicken until browned on all sides.",
+        "Melt butter in the same pan, add tomato puree and simmer.",
+        "Add chicken and heavy cream, cooking until sauce thickens.",
+        "Serve with hot butter naan or basmati rice."
+      ], 
+      difficultyLevel: "Medium", 
+      estimatedPrepTime: "45 min" 
+    } 
+  }
 ];
 
 export default function Home() {
@@ -53,19 +144,23 @@ export default function Home() {
     setIsLoading(true);
     setCurrentInput(data);
     try {
-      const [recipeResult, pantryResult] = await Promise.all([
-        generateRecipeSuggestions({
+      const [recipeAction, pantryAction] = await Promise.all([
+        suggestRecipes({
           ingredientPhotos: data.photos,
           ingredientText: data.text,
           mode: activeMode,
         }),
-        generatePantrySuggestions({
+        suggestPantryItems({
           currentIngredients: data.text || "Fresh produce",
         })
       ]);
       
-      setSuggestions(recipeResult);
-      setPantrySuggestions(pantryResult);
+      if (recipeAction.success && recipeAction.data) {
+        setSuggestions(recipeAction.data as any);
+      }
+      if (pantryAction.success && pantryAction.data) {
+        setPantrySuggestions(pantryAction.data);
+      }
       
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({ behavior: 'smooth' });
@@ -188,7 +283,7 @@ export default function Home() {
               ) : (
                 <div className="space-y-24">
                   <div className="grid gap-8 lg:grid-cols-3">
-                    {suggestions?.recipeSuggestions.map((recipe, idx) => (
+                    {suggestions?.recipeSuggestions.map((recipe: any, idx: number) => (
                       <Card key={idx} className="group flex flex-col border-none bg-white/70 backdrop-blur-md hover:bg-white transition-all shadow-xl hover:shadow-2xl rounded-[3rem] overflow-hidden border-2 border-transparent hover:border-primary/5">
                         <div className="aspect-[16/10] overflow-hidden relative">
                           <img 
@@ -232,7 +327,7 @@ export default function Home() {
                               <ShoppingBasket className="h-3 w-3" /> Ingredients
                             </h4>
                             <div className="flex flex-wrap gap-2">
-                              {recipe.ingredientsUsed.slice(0, 4).map((ing, i) => (
+                              {recipe.ingredientsUsed.slice(0, 4).map((ing: any, i: number) => (
                                 <Badge key={i} variant="outline" className="text-[10px] font-bold border-primary/10 text-primary/60 rounded-full px-3 py-0.5">
                                   {ing}
                                 </Badge>
@@ -405,7 +500,7 @@ export default function Home() {
         <RecipeDetail 
           recipe={selectedRecipe} 
           onClose={() => setSelectedRecipe(null)} 
-          availableIngredients={currentInput.text ? [...(currentInput.text.split(',').map(s => s.trim())), ...selectedRecipe.ingredientsUsed] : selectedRecipe.ingredientsUsed}
+          availableIngredients={currentInput.text ? [...(currentInput.text.split(',').map((s: string) => s.trim())), ...selectedRecipe.ingredientsUsed] : selectedRecipe.ingredientsUsed}
         />
       )}
     </div>

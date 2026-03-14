@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -21,7 +22,6 @@ export default function GroceryPage() {
   useEffect(() => {
     // Generate list from planned recipes
     const planner = JSON.parse(localStorage.getItem("harvest_meal_planner") || "{}");
-    const pantry = JSON.parse(localStorage.getItem("harvest_pantry") || "[]");
     
     const allIngredients: any[] = [];
     Object.values(planner).forEach((dayRecipes: any) => {
@@ -33,7 +33,7 @@ export default function GroceryPage() {
                 name: ing.name,
                 quantity: ing.quantity,
                 checked: false,
-                category: "Produce", // Simplified
+                category: "Produce",
                 id: Math.random().toString(36).substr(2, 9)
               });
             }
@@ -65,6 +65,30 @@ export default function GroceryPage() {
     setList(list.filter(item => !item.checked));
   };
 
+  const updateQuantity = (id: string, newQty: string) => {
+    setList(list.map(item => item.id === id ? { ...item, quantity: newQty } : item));
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleShare = () => {
+    const shareText = list.map(i => `${i.checked ? ' [x] ' : ' [ ] '} ${i.name} (${i.quantity || '1 unit'})`).join('\n');
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Ingredia Grocery List',
+        text: shareText,
+      }).catch(() => {
+        navigator.clipboard.writeText(shareText);
+        alert("List copied to clipboard!");
+      });
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert("List copied to clipboard!");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F7F4]">
       <Navbar />
@@ -77,8 +101,8 @@ export default function GroceryPage() {
               <p className="text-muted-foreground font-medium text-lg">AI-synchronized with your meal planner.</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="rounded-full border-primary/20"><Share2 className="h-4 w-4" /></Button>
-              <Button variant="outline" className="rounded-full border-primary/20"><Printer className="h-4 w-4" /></Button>
+              <Button variant="outline" className="rounded-full border-primary/20" onClick={handleShare}><Share2 className="h-4 w-4" /></Button>
+              <Button variant="outline" className="rounded-full border-primary/20" onClick={handlePrint}><Printer className="h-4 w-4" /></Button>
             </div>
           </header>
 
@@ -101,6 +125,7 @@ export default function GroceryPage() {
                       value={newItem}
                       onChange={(e) => setNewItem(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && addItem()}
+                      suppressHydrationWarning
                     />
                     <Button onClick={addItem} className="rounded-full bg-primary h-12 w-12 p-0 flex-shrink-0">
                        <Plus className="h-6 w-6" />
@@ -126,9 +151,18 @@ export default function GroceryPage() {
                            <p className={`text-lg font-bold text-primary transition-all ${item.checked ? 'line-through opacity-40' : ''}`}>
                              {item.name}
                            </p>
-                           <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/10 text-primary/40">
-                             {item.quantity || '1 unit'}
-                           </Badge>
+                           <div className="flex items-center gap-2">
+                             <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/10 text-primary/40">
+                               {item.category}
+                             </Badge>
+                             <Input 
+                               className="h-6 w-24 text-[10px] font-black uppercase tracking-widest border-none bg-primary/5 rounded-md px-2 focus-visible:ring-1 focus-visible:ring-primary/20"
+                               value={item.quantity || ''}
+                               onChange={(e) => updateQuantity(item.id, e.target.value)}
+                               placeholder="Quantity"
+                               suppressHydrationWarning
+                             />
+                           </div>
                          </div>
                        </div>
                        <Button 
@@ -136,6 +170,7 @@ export default function GroceryPage() {
                         size="icon" 
                         className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => setList(list.filter(i => i.id !== item.id))}
+                        suppressHydrationWarning
                        >
                          <Trash2 className="h-5 w-5" />
                        </Button>

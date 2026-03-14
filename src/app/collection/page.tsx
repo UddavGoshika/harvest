@@ -7,10 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Trash2, ChevronRight, Clock, ChefHat } from "lucide-react";
 import { RecipeDetail } from "@/components/recipe-detail";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter 
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, BookOpen } from "lucide-react";
 
 export default function CollectionPage() {
   const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+  const [isAddingManual, setIsAddingManual] = useState(false);
+  const { toast } = useToast();
+  
+  const [manualRecipe, setManualRecipe] = useState({
+    recipeName: "",
+    description: "",
+    time: "30 min",
+    difficulty: "Medium",
+    ingredients: "",
+    instructions: "",
+    calories: "400"
+  });
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("harvest_saved_recipes") || "[]");
@@ -23,14 +42,56 @@ export default function CollectionPage() {
     localStorage.setItem("harvest_saved_recipes", JSON.stringify(updated));
   };
 
+  const saveManualRecipe = () => {
+    if (!manualRecipe.recipeName || !manualRecipe.ingredients || !manualRecipe.instructions) {
+       toast({ title: "Please fill all required fields" });
+       return;
+    }
+
+    const newRecipe = {
+      id: "m" + Date.now(),
+      recipeName: manualRecipe.recipeName,
+      description: manualRecipe.description,
+      estimatedPrepTime: manualRecipe.time,
+      difficultyLevel: manualRecipe.difficulty,
+      nutrition: { calories: parseInt(manualRecipe.calories) },
+      details: {
+        ingredients: manualRecipe.ingredients.split('\n').map(i => ({ name: i.trim(), quantity: "As needed", isAvailable: true })),
+        instructions: manualRecipe.instructions.split('\n').filter(i => i.trim()),
+        difficultyLevel: manualRecipe.difficulty,
+        estimatedPrepTime: manualRecipe.time
+      }
+    };
+
+    const updated = [newRecipe, ...savedRecipes];
+    setSavedRecipes(updated);
+    localStorage.setItem("harvest_saved_recipes", JSON.stringify(updated));
+    setIsAddingManual(false);
+    setManualRecipe({
+      recipeName: "",
+      description: "",
+      time: "30 min",
+      difficulty: "Medium",
+      ingredients: "",
+      instructions: "",
+      calories: "400"
+    });
+    toast({ title: "Manual Recipe Saved", description: "This recipe is now immortalized in your collection." });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="flex flex-col space-y-2">
-            <h1 className="text-4xl font-headline font-bold text-primary">Your Collection</h1>
-            <p className="text-muted-foreground">Your personalized vault of culinary discoveries.</p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-headline font-bold text-primary">Your Collection</h1>
+              <p className="text-muted-foreground">Your personalized vault of culinary discoveries.</p>
+            </div>
+            <Button onClick={() => setIsAddingManual(true)} className="rounded-full bg-gradient-primary border-none text-white font-black shadow-xl h-12 px-8 uppercase text-xs tracking-widest">
+               <Plus className="mr-2 h-4 w-4" /> Create Manual Recipe
+            </Button>
           </div>
 
           {savedRecipes.length === 0 ? (
@@ -99,26 +160,85 @@ export default function CollectionPage() {
           availableIngredients={selectedRecipe.ingredientsUsed || []}
         />
       )}
-    </div>
-  );
-}
 
-function BookOpen(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-    </svg>
+      <Dialog open={isAddingManual} onOpenChange={setIsAddingManual}>
+        <DialogContent className="max-w-2xl bg-[#F5F7F4] rounded-[3rem] p-0 overflow-hidden border-none shadow-2xl">
+           <div className="p-8 md:p-12 bg-white">
+              <DialogTitle className="text-3xl font-headline text-primary mb-2">Create Manual Recipe</DialogTitle>
+              <DialogDescription className="text-muted-foreground font-medium">Draft your own hardcoded recipe details.</DialogDescription>
+           </div>
+           <div className="p-8 md:p-12 space-y-6 max-h-[60vh] overflow-y-auto">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Recipe Name*</label>
+                  <Input 
+                    placeholder="Grandma's Secret Pasta..." 
+                    className="rounded-xl border-primary/10"
+                    value={manualRecipe.recipeName}
+                    onChange={(e) => setManualRecipe({...manualRecipe, recipeName: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Prep Time</label>
+                  <Input 
+                    placeholder="e.g. 45 min" 
+                    className="rounded-xl border-primary/10"
+                    value={manualRecipe.time}
+                    onChange={(e) => setManualRecipe({...manualRecipe, time: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Ingredients (One per line)*</label>
+                <Textarea 
+                  placeholder="2 Carrots&#10;1 Onion&#10;..." 
+                  className="rounded-xl border-primary/10 min-h-[100px]"
+                  value={manualRecipe.ingredients}
+                  onChange={(e) => setManualRecipe({...manualRecipe, ingredients: e.target.value})}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Instructions (One per line)*</label>
+                <Textarea 
+                  placeholder="1. Wash vegetables&#10;2. Chop finely&#10;..." 
+                  className="rounded-xl border-primary/10 min-h-[150px]"
+                  value={manualRecipe.instructions}
+                  onChange={(e) => setManualRecipe({...manualRecipe, instructions: e.target.value})}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Difficulty</label>
+                    <select 
+                      className="w-full h-10 px-3 rounded-xl border border-primary/10 bg-white"
+                      value={manualRecipe.difficulty}
+                      onChange={(e) => setManualRecipe({...manualRecipe, difficulty: e.target.value})}
+                    >
+                      <option>Easy</option>
+                      <option>Medium</option>
+                      <option>Hard</option>
+                    </select>
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-primary/40">Approx. Calories</label>
+                    <Input 
+                      type="number"
+                      className="rounded-xl border-primary/10"
+                      value={manualRecipe.calories}
+                      onChange={(e) => setManualRecipe({...manualRecipe, calories: e.target.value})}
+                    />
+                 </div>
+              </div>
+           </div>
+           <div className="p-8 border-t bg-white flex justify-end gap-3">
+              <Button variant="ghost" onClick={() => setIsAddingManual(false)} className="rounded-full font-bold">Cancel</Button>
+              <Button onClick={saveManualRecipe} className="rounded-full bg-primary text-white font-bold px-8">Save Hardcoded Recipe</Button>
+           </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

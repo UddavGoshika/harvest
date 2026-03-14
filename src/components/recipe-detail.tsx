@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { generateDetailedRecipeInstructions, GenerateDetailedRecipeInstructionsOutput } from "@/ai/flows/generate-detailed-recipe-instructions";
+import { generateRecipeBlueprint } from "@/app/actions/ai";
+import type { DetailedRecipeOutput as GenerateDetailedRecipeInstructionsOutput } from "@/types/ai";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft, Share2, ShoppingCart, Wand2, CookingPot } from "lucide-react";
+import { Check, Clock, ChefHat, Info, Save, Heart, Flame, Apple, Zap, Droplets, Calendar, Sparkles, X, Mic, MicOff, ChevronRight, ChevronLeft, Share2, ShoppingCart, Wand2, CookingPot, Plus, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -41,13 +42,33 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
 
   useEffect(() => {
     async function loadDetails() {
+      if (recipe.details) {
+        setDetails(recipe.details);
+        setLoading(false);
+        return;
+      }
       try {
-        const result = await generateDetailedRecipeInstructions({
-          recipeName: recipe.recipeName,
-          recipeSummary: recipe.description,
-          availableIngredients,
-        });
-        setDetails(result);
+        // AI blueprint call removed as per user request to use hardcoded data
+        // Generating a high-quality hardcoded fallback based on recipe name
+        const fallbackDetails: GenerateDetailedRecipeInstructionsOutput = {
+          estimatedPrepTime: recipe.estimatedPrepTime || "25 min",
+          difficultyLevel: recipe.difficultyLevel || "Medium",
+          nutritionalInformation: `Approx ${recipe.nutrition?.calories || 450} calories. Balanced macros for a healthy meal.`,
+          instructions: [
+            `Prepare all fresh ingredients: ${recipe.ingredientsUsed?.join(', ') || 'available produce'}.`,
+            "Sauté aromatics in a pan with a dash of oil until fragrant.",
+            `Incorporate the primary ingredients into the pan and season to taste.`,
+            "Simmer for 10-15 minutes until textures are perfect.",
+            "Garnish with fresh herbs and serve immediately."
+          ],
+          ingredients: (recipe.ingredientsUsed || ["Fresh basic ingredients"]).map((name: string) => ({
+            name: name,
+            quantity: "1 unit",
+            isAvailable: true
+          }))
+        };
+        
+        setDetails(fallbackDetails);
       } catch (error) {
         console.error("Failed to load recipe details", error);
       } finally {
@@ -124,13 +145,25 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
   };
 
   const handleShare = () => {
+    const text = `🍽️ Check out this amazing recipe: ${recipe.recipeName}\n\n📝 Description: ${recipe.description}\n\n🛒 Ingredients:\n${details?.ingredients.map((i: any) => `- ${i.name} (${i.quantity})`).join('\n')}\n\n🔥 Shared via Harvest AI App`;
+    
     if (navigator.share) {
       navigator.share({
         title: recipe.recipeName,
-        text: `Check out this AI recipe from Ingredia: ${recipe.recipeName}`,
+        text: text,
         url: window.location.href,
-      }).catch(() => {});
+      }).catch(() => {
+        navigator.clipboard.writeText(text);
+        toast({ title: "Link Copied", description: "Ready to share with friends!" });
+      });
+    } else {
+      navigator.clipboard.writeText(text);
+      toast({ title: "Details Copied", description: "Paste them in any app to share." });
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const handleOrder = (app: string) => {
@@ -143,6 +176,10 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden flex flex-col bg-[#F5F7F4] border-none rounded-[3rem] shadow-2xl">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-6 bg-primary/5">
+            <div className="sr-only">
+              <DialogTitle>{recipe.recipeName}</DialogTitle>
+              <DialogDescription>{recipe.description}</DialogDescription>
+            </div>
             <div className="relative">
                <div className="h-16 w-16 border-4 border-primary/10 border-t-primary animate-spin rounded-full" />
                <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-primary animate-pulse" />
@@ -167,6 +204,9 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                   </Button>
                   <Button variant="outline" size="icon" className="rounded-full border-primary/20" onClick={handleShare} suppressHydrationWarning>
                     <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="rounded-full border-primary/20" onClick={handlePrint} suppressHydrationWarning>
+                    <Printer className="h-4 w-4" />
                   </Button>
                   <Button variant="default" className="rounded-full bg-primary font-bold" onClick={saveToCollection} suppressHydrationWarning>
                     <Heart className="h-4 w-4 mr-2" /> Save
@@ -236,7 +276,7 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {details.ingredients.map((ing, i) => (
+                      {details.ingredients.map((ing: any, i: number) => (
                         <div key={i} className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${ing.isAvailable ? 'bg-primary/5 border-primary/20' : 'bg-white border-primary/5 opacity-60'}`}>
                           <div className="flex items-center gap-3">
                             <div className={`h-6 w-6 rounded-full flex items-center justify-center ${ing.isAvailable ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
@@ -259,7 +299,7 @@ export function RecipeDetail({ recipe, onClose, availableIngredients }: RecipeDe
                       </Button>
                     </div>
                     <div className="space-y-12">
-                      {details.instructions.map((step, i) => (
+                      {details.instructions.map((step: any, i: number) => (
                         <div key={i} className="flex gap-8 group">
                           <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center font-black flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                             {i + 1}
