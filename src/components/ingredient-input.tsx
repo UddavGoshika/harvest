@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { runMarketScan } from "@/app/actions/ai";
 
 const COMMON_INGREDIENTS = [
   "Garlic", "Onion", "Olive Oil", "Salt", "Black Pepper", "Butter", "Eggs", "Milk", 
@@ -29,6 +30,7 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
   const [detectedItems, setDetectedItems] = useState<string[]>([]);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -64,22 +66,34 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
     }
   }, [isCameraActive]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    files.forEach(file => {
+    for (const file of files) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotos(prev => [...prev, reader.result as string]);
-        // Mocking AI detection for UX feedback
-        setTimeout(() => {
-          setDetectedItems(prev => [...new Set([...prev, "Fresh Produce", "Assorted Spices"])]);
-        }, 1000);
+      reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        setPhotos(prev => [...prev, base64]);
+        
+        // Real AI Vision call
+        setIsScanning(true);
+        try {
+          const result = await runMarketScan({ contentType: file.type, url: base64 });
+          if (result.success && result.data?.ingredients) {
+            const detected = result.data.ingredients.map(i => i.name);
+            setDetectedItems(prev => [...new Set([...prev, ...detected])]);
+            toast({ title: "Scan Complete", description: `Found ${detected.length} ingredients.` });
+          }
+        } catch (err) {
+          console.error("Scan failed", err);
+        } finally {
+          setIsScanning(false);
+        }
       };
       reader.readAsDataURL(file);
-    });
+    }
   };
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -90,8 +104,20 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUri = canvas.toDataURL('image/jpeg');
         setPhotos(prev => [...prev, dataUri]);
-        setDetectedItems(prev => [...new Set([...prev, "Vegetables", "Fridge Items"])]);
-        toast({ title: "Captured!", description: "AI is analyzing your ingredients..." });
+        
+        setIsScanning(true);
+        try {
+          toast({ title: "Analyzing...", description: "Identifying ingredients from camera." });
+          const result = await runMarketScan({ contentType: "image/jpeg", url: dataUri });
+          if (result.success && result.data?.ingredients) {
+            const detected = result.data.ingredients.map(i => i.name);
+            setDetectedItems(prev => [...new Set([...prev, ...detected])]);
+          }
+        } catch (err) {
+          console.error("Capture scan failed", err);
+        } finally {
+          setIsScanning(false);
+        }
       }
     }
   };
@@ -109,7 +135,9 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
 
   const handleAddDetectedItem = (newItem: string) => {
     if (!newItem.trim()) return;
-    setDetectedItems(prev => [...new Set([...prev, newItem.trim()])]);
+    const updated = [...new Set([...detectedItems, newItem.trim()])];
+    setDetectedItems(updated);
+    localStorage.setItem("harvest_tracked_ingredients", updated.join(', '));
   };
 
   return (
@@ -201,8 +229,8 @@ export function IngredientInput({ onGenerate, isLoading }: IngredientInputProps)
 
               <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 animate-fade-in">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                  <h4 className="text-[10px] font-black text-primary/60 uppercase tracking-widest">
-                    AI Detected Ingredients
+                  <h4 className="text-[10px] font-black text-primary/60 uppercase tracking-widest flex items-center gap-2">
+                    {isScanning ? <RefreshCw className="h-3 w-3 animate-spin" /> : "AI Detected Ingredients"}
                   </h4>
                   <div className="flex items-center gap-2">
                     <Input 

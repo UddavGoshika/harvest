@@ -30,6 +30,7 @@ export interface RecipeSuggestion {
   previewInstructions: string[];
   isRescue: boolean;
   mysteryChallenge?: string;
+  imageUrl?: string;
   details?: DetailedRecipeOutput;
 }
 
@@ -57,5 +58,6 @@ export interface MarketScanOutput {
   weeklyPlan: Record<string, {
     recipeName: string;
     description: string;
+    imageUrl?: string;
   }[]>;
 }

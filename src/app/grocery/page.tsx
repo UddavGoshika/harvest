@@ -90,7 +90,7 @@ export default function GroceryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7F4]">
+    <div className="min-h-screen">
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-12">

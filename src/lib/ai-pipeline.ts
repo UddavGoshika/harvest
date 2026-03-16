@@ -5,12 +5,34 @@ const ROBOFLOW_API_KEY = process.env.ROBOFLOW_API_KEY;
 const ROBOFLOW_MODEL_ID = process.env.ROBOFLOW_MODEL_ID || 'vegetable-detection/1';
 
 const MODELS = [
-  process.env.PRIMARY_MODEL || 'openai/gpt-oss-120b:free',
-  process.env.FALLBACK_MODEL_1 || 'google/gemini-2.0-pro-exp:free',
-  process.env.FALLBACK_MODEL_2 || 'deepseek/deepseek-r1:free',
-  'anthropic/claude-3-haiku',
-  'google/gemini-flash-1.5'
+  process.env.PRIMARY_MODEL || 'meta-llama/llama-3.1-8b-instruct:free',
+  process.env.FALLBACK_MODEL_1 || 'google/gemma-2-9b-it:free',
+  process.env.FALLBACK_MODEL_2 || 'mistralai/pixtral-12b:free',
+  'qwen/qwen-2.5-7b-instruct:free',
+  'microsoft/phi-3-mini-128k-instruct:free'
 ];
+
+/**
+ * Robustly extracts JSON from a string that might contain other text.
+ */
+function extractJSON(text: string) {
+  try {
+    // Clean potential markdown junk
+    const jsonString = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(jsonString);
+  } catch (e) {
+    // Regex fallback for buried JSON
+    const match = text.match(/{[\s\S]*}/);
+    if (match) {
+      try {
+        return JSON.parse(match[0]);
+      } catch (innerE: any) {
+        throw new Error("Could not parse extracted JSON: " + innerE.message);
+      }
+    }
+    throw new Error("No JSON found in response: " + text.slice(0, 100));
+  }
+}
 
 /**
  * Executes a text-based AI prompt with a model fallback chain via OpenRouter.
@@ -41,7 +63,7 @@ export async function talkToAI(prompt: string, jsonMode = true) {
       );
 
       const content = response.data.choices[0].message.content;
-      return jsonMode ? JSON.parse(content) : content;
+      return jsonMode ? extractJSON(content) : content;
     } catch (error: any) {
       console.error(`Model ${model} failed:`, error.response?.data || error.message);
       continue;
@@ -62,12 +84,15 @@ export async function scanImageToIngredients(base64Image: string) {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'google/gemini-flash-1.5',
+        model: 'nvidia/nemotron-nano-12b-v2-vl:free',
         messages: [
           {
             role: 'user',
             content: [
-              { type: 'text', text: "Identify all vegetables and ingredients in this image. Return a JSON object: { 'ingredients': [ { 'name': 'string', 'quantity': 'string', 'calories': 'string', 'expiryDays': number } ], 'weeklyPlan': { 'Monday': [], ... } }" },
+              { 
+                type: 'text', 
+                text: "Analyze this fridge or ingredient image with extreme precision. Identify EVERY specific item (e.g., 'Red Bell Pepper', 'Carrot', 'Spinach', 'Greek Yogurt') instead of generic categories. Do NOT use labels like 'Fresh Produce' or 'Assorted Spices'. For each item, estimate quantity and remaining shelf life. Return a JSON object: { 'ingredients': [ { 'name': 'string', 'quantity': 'string', 'calories': 'string', 'expiryDays': number } ], 'weeklyPlan': { 'Monday': [], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': [], 'Saturday': [], 'Sunday': [] } }" 
+              },
               { type: 'image_url', image_url: { url: base64Image } }
             ]
           }
@@ -82,7 +107,7 @@ export async function scanImageToIngredients(base64Image: string) {
         timeout: 45000
       }
     );
-    return JSON.parse(response.data.choices[0].message.content);
+    return extractJSON(response.data.choices[0].message.content);
   } catch (error: any) {
     console.error("Stage 1 (Gemini) failed:", error.response?.data || error.message);
   }
@@ -117,12 +142,13 @@ export async function scanImageToIngredients(base64Image: string) {
   console.log("Final Stage: YOLO/Static Fallback triggered.");
   return {
     ingredients: [
-      { name: "Market Item 1", quantity: "Approx 500g", calories: "100", expiryDays: 5 },
-      { name: "Market Item 2", quantity: "Approx 200g", calories: "50", expiryDays: 10 }
+      { name: "Potato", quantity: "3-4 pieces", calories: "150", expiryDays: 14 },
+      { name: "Onion", quantity: "2 large", calories: "40", expiryDays: 20 },
+      { name: "Tomato", quantity: "2 medium", calories: "22", expiryDays: 5 }
     ],
     weeklyPlan: {
-      "Monday": [{ recipeName: "Roasted Veggie Pasta", description: "Use tomatoes and peppers." }],
-      "Wednesday": [{ recipeName: "Carrot & Ginger Soup", description: "A warming nutrient boost." }]
+      "Monday": [{ recipeName: "Classic Roasted Potatoes", description: "Oven roasted with herbs." }],
+      "Wednesday": [{ recipeName: "Onion & Tomato Salad", description: "Fresh and zingy." }]
     }
   };
 }

@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: 'Ingredia - AI-Powered Gourmet Recipe Generator',
   description: 'Turn your ingredients into Michelin-star recipes instantly with Ingredia AI.',
 };
+
+import { AuthModal } from '@/components/auth-modal';
+
+import { Providers } from "@/components/providers";
 
 export default function RootLayout({
   children,
@@ -19,9 +23,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased bg-background text-foreground" suppressHydrationWarning>
-        {children}
-        <Toaster />
+      <body className="font-body antialiased text-foreground" suppressHydrationWarning>
+        <Providers>
+          {children}
+          <AuthModal />
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
